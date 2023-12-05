@@ -1,0 +1,76 @@
+
+export class GeojsonApiResponse <T = any> {
+  constructor(
+    public readonly type: string,
+    public readonly features: T) {
+  }
+}
+
+export class Point {
+  constructor(
+    public readonly coordinates: [number, number]) {
+  }
+}
+
+export class MultiPoint {
+  constructor(
+    public readonly coordinates: number[][]) {
+  }
+}
+
+export class LineString {
+  constructor(
+    public readonly coordinates: number[][]) {
+  }
+}
+
+export class MultiLineString {
+  constructor(
+    public readonly coordinates: number[][][]) {
+  }
+}
+
+export class Polygon {
+  constructor(
+    public readonly coordinates: number[][][]) {
+  }
+}
+
+export class MultiPolygon {
+  constructor(
+    public readonly coordinates: number[][][][]) {
+  }
+}
+
+export class GeometryCollection {
+  constructor(
+    public readonly geometries: any[]) {
+  }
+}
+
+export class Feature {
+  constructor(
+    public readonly geometry: any,
+    public readonly properties?: any) {
+  }
+}
+
+export class FeatureCollection {
+  constructor(
+    public readonly features: any[]) {
+  }
+}
+
+
+export enum GeojsonType {
+  Feature = 'Feature',
+  FeatureCollection = 'FeatureCollection',
+  Point = 'Point',
+  MultiPoint = 'MultiPoint',
+  LineString = 'LineString',
+  MultiLineString = 'MultiLineString',
+  Polygon = 'Polygon',
+  MultiPolygon = 'MultiPolygon',
+  GeometryCollection = 'GeometryCollection'
+}
+

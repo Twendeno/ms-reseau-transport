@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Coordinate {
+  uuid              String              @id @default(uuid())
+  longitude         Float
+  latitude          Float
+  latLng            String              @unique
+  isStop            Boolean             @default(false)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  geometry CoordinatePolygon[]
+}
+
+model Geometry {
+  uuid              String              @id @default(uuid())
+  type              Nature              @default(Polygon)
+  name              String?             @unique @db.VarChar(50)
+  reference         String              @unique @db.VarChar(50)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  coordinates CoordinatePolygon[]
+}
+
+model CoordinatePolygon {
+  uuid            String     @id @default(uuid())
+
+  geometry_uuid   String
+  geometry        Geometry   @relation(fields: [geometry_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
+
+  coordinate_uuid String
+  coordinate      Coordinate @relation(fields: [coordinate_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
+
+  assignedAt      DateTime   @default(now())
+  assignedBy      String?
+}
+
+enum Nature {
+  Polygon
+  Point
+  LineString
+  Multipoints
+  MultiLineString
+  MultiPolygon
+}
+
+// model Department {
+//   uuid          String   @id @default(uuid())
+//   name          String   @unique @db.VarChar(50)
+//   area          String?
+//   polygon       String
+//   user_uid      String
+//   last_user_uid String
+//   createdAt     DateTime @default(now())
+//   updatedAt     DateTime @updatedAt
+// }
+
+// model Town {
+//   uuid          String   @id @default(uuid())
+//   name          String   @unique
+//   area          String?
+//   longitude     Float
+//   latitude      Float
+//   user_uid      String
+//   last_user_uid String
+//   createdAt     DateTime @default(now())
+//   updatedAt     DateTime @updatedAt
+// }
+//
+// model District {
+//   uuid          String   @id @default(uuid())
+//   name          String   @unique
+//   area          String
+//   user_uid      String
+//   last_user_uid String
+//   createdAt     DateTime @default(now())
+//   updatedAt     DateTime @updatedAt
+// }
