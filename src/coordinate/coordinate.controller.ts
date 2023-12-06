@@ -32,8 +32,4 @@ export class CoordinateController {
     return this.coordinateService.delete(uuid);
   }
 
-  @Get('geojson/:uuid')
-  geojsonPoint(@Param('uuid') uuid: string) {
-    return this.coordinateService.geojsonPoint(uuid);
-  }
 }
