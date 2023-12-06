@@ -2,7 +2,6 @@ import { ConflictException, HttpStatus, Injectable, NotFoundException } from "@n
 import { CoordinateDto } from "./dto/coordinateDto";
 import { PrismaService } from "../prisma/prisma.service";
 import { JsonApiResponse } from "../json-api-response/json-api-response";
-import { GeojsonApiResponse, GeojsonType, Point } from "../geojson-api-response/geojson-api-response";
 
 @Injectable()
 export class CoordinateService {
@@ -87,14 +86,4 @@ export class CoordinateService {
     return new JsonApiResponse<CoordinateDto>( HttpStatus.OK,"Coordinate successfully deleted",coordinate);
   }
 
-  async geojsonPoint(uuid: string) {
-    const coordinate = await this.prismaService.coordinate.findUnique({
-      where: { uuid },
-      select: { latitude: true, longitude: true }
-    });
-
-    if (!coordinate) throw new NotFoundException('Coordinate not found');
-
-    return new GeojsonApiResponse<Point>(GeojsonType.Point,{coordinates: [coordinate.latitude, coordinate.longitude]});
-  }
 }

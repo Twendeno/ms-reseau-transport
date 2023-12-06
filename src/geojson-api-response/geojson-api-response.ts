@@ -8,48 +8,56 @@ export class GeojsonApiResponse <T = any> {
 
 export class Point {
   constructor(
+    public readonly type: string,
     public readonly coordinates: [number, number]) {
   }
 }
 
 export class MultiPoint {
   constructor(
+    public readonly type: string,
     public readonly coordinates: number[][]) {
   }
 }
 
 export class LineString {
   constructor(
+    public readonly type: string,
     public readonly coordinates: number[][]) {
   }
 }
 
 export class MultiLineString {
   constructor(
+    public readonly type: string,
     public readonly coordinates: number[][][]) {
   }
 }
 
 export class Polygon {
   constructor(
+    public readonly type: string,
     public readonly coordinates: number[][][]) {
   }
 }
 
 export class MultiPolygon {
   constructor(
+    public readonly type: string,
     public readonly coordinates: number[][][][]) {
   }
 }
 
 export class GeometryCollection {
   constructor(
+    public readonly type: string,
     public readonly geometries: any[]) {
   }
 }
 
 export class Feature {
   constructor(
+    public readonly type: string,
     public readonly geometry: any,
     public readonly properties?: any) {
   }
@@ -57,6 +65,7 @@ export class Feature {
 
 export class FeatureCollection {
   constructor(
+    public readonly type: string,
     public readonly features: any[]) {
   }
 }
