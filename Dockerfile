@@ -1,4 +1,4 @@
-FROM node:20.9 as build
+FROM node:20.9-alpine as build
 EXPOSE 3000
 EXPOSE 5000
 
@@ -12,7 +12,7 @@ COPY . .
 
 RUN npm run build
 
-ENTRYPOINT ["/bin/bash", "-c", "npx prisma generate;npm run start:prod "]
+CMD ["/bin/sh", "-c", "npx prisma generate;npm run start:prod "]
 
 
 
