@@ -80,3 +80,39 @@ npm i @nestjs/config
 |   Fichier     |    Ligne  |  Avant   |  Après   |
 |   ---    |   ---     |   ---    |   ---    |
 |   .eslintrc   |    18 |  ignorePatterns: ['.eslintrc.js']    |   ignorePatterns: ['.eslintrc.js',"*"]    |
+
+## Comment demarrer le projet avec docker 
+
+### Pre-requis
+- Docker
+- Docker-compose
+- Postgres
+
+### Etapes
+```bash
+# 1. Cloner le projet
+$ git clone
+
+# 2. demarrer postgres
+
+# 3. Creer une base de donnee avec le nom "msReseauTrans"
+
+# 4. executer la commande suivante une fois dans le dossier du projet 
+# Sans argument de configuration
+$ docker build -t ms-reseau-transport:latest .
+
+# Avec argument de configuration
+
+# Liste des arguments:
+# SERVER_PORT : port sur lequel le serveur va ecouter
+# PG_USERNAME : nom d'utilisateur de la base de donnee
+# PG_PASSWORD : mot de passe de la base de donnee
+# PG_HOST : host de la base de donnee
+# PG_PORT : port de la base de donnee
+# PG_DATABASE : nom de la base de donnee
+
+$ docker build -t ms-reseau-transport:latest --build-arg SERVER_PORT=3000  --build-arg PG_USERNAME=postgres --build-arg PG_PASSWORD=root  --build-arg PG_HOST=localhost --build-arg PG_PORT=postgres --build-arg PG_DATABASE=msReseauTrans  .
+
+# 5. Ouvrier le navigateur et aller sur l'url suivante
+# http://localhost:3000/healt
+```
