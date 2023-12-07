@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME:  ${{ github.repository | replace('/', '_') | toLowerCase() }}
+  IMAGE_NAME: ${{ github.event.repository.name }}
 
 jobs:
   build:
@@ -41,4 +41,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ github.repository | replace('/', '_') | toLowerCase() }}:${{ github.run_number }}-${{ github.head_ref || github.ref_name }}
+            ${{ github.event.repository.name }}:${{ github.run_number }}-${{ github.head_ref || github.ref_name }}
