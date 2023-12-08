@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CoordinateGeojsonController } from './coordinate-geojson.controller';
+import { CoordinateGeojsonService } from "./coordinate-geojson.service";
 
 describe('CoordinateGeojsonController', () => {
   let controller: CoordinateGeojsonController;
@@ -7,6 +8,7 @@ describe('CoordinateGeojsonController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CoordinateGeojsonController],
+      providers:[{ provide: CoordinateGeojsonService, useValue: jest.fn() }]
     }).compile();
 
     controller = module.get<CoordinateGeojsonController>(CoordinateGeojsonController);

@@ -1,7 +1,7 @@
 import { ConflictException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { CoordinateDto } from "./dto/coordinateDto";
 import { PrismaService } from "../prisma/prisma.service";
-import { JsonApiResponse } from "../json-api-response/json-api-response";
+import { JsonApiResponse } from "../models/json-api-response/json-api-response";
 
 @Injectable()
 export class CoordinateService {

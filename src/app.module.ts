@@ -4,6 +4,7 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { ConfigModule } from "@nestjs/config";
 import { CoordinateGeojsonModule } from './coordinate-geojson/coordinate-geojson.module';
 import { HealthModule } from './health/health.module';
+import { GeometryModule } from './geometry/geometry.module';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { HealthModule } from './health/health.module';
     CoordinateModule,
     PrismaModule,
     CoordinateGeojsonModule,
-    HealthModule
+    HealthModule,
+    GeometryModule,
   ],
   controllers: [],
   providers: []
