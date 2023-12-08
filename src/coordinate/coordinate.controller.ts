@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
-import { JsonApiResponse } from "../json-api-response/json-api-response";
+import { JsonApiResponse } from "../models/json-api-response/json-api-response";
 import { CoordinateDto } from "./dto/coordinateDto";
 import { CoordinateService } from "./coordinate.service";
 

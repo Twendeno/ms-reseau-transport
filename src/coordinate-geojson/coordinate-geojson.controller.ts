@@ -6,7 +6,7 @@ import {
   MultiPolygon,
   Point,
   Polygon
-} from "../geojson-api-response/geojson-api-response";
+} from "../models/geojson-api-response/geojson-api-response";
 
 @Controller('coordinate-geojson')
 export class CoordinateGeojsonController {

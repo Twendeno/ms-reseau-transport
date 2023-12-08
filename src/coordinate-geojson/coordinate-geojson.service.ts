@@ -5,7 +5,7 @@ import {
   LineString, MultiLineString,
   MultiPoint, MultiPolygon,
   Point, Polygon
-} from "../geojson-api-response/geojson-api-response";
+} from "../models/geojson-api-response/geojson-api-response";
 import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
