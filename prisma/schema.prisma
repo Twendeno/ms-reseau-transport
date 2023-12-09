@@ -23,7 +23,7 @@ model Coordinate {
 
 model Geometry {
   uuid        String              @id @default(uuid())
-  type        Nature              @default(LineString)
+  type        String              @default("LineString")
   name        String?             @db.VarChar(50)
   reference   String              @unique @db.VarChar(50)
   createdAt   DateTime            @default(now())
@@ -42,15 +42,6 @@ model CoordinatePolygon {
 
   assignedAt DateTime @default(now())
   assignedBy String?
-}
-
-enum Nature {
-  Polygon
-  Point
-  LineString
-  Multipoints
-  MultiLineString
-  MultiPolygon
 }
 
 // model Department {

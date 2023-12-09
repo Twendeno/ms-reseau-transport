@@ -1,11 +1,11 @@
 import { IsEnum, IsNotEmpty, IsOptional } from "class-validator";
-import { Nature } from "@prisma/client";
+import { GeojsonType } from "../../models/geojson-api-response/geojson-api-response";
 
 export class GeometryDto {
   @IsNotEmpty()
-  @IsEnum(Nature)
+  @IsEnum(GeojsonType)
   @IsOptional()
-  type: Nature = Nature.LineString;
+  type: String = GeojsonType.LineString;
 
   @IsNotEmpty()
   name: string;
