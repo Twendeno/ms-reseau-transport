@@ -19,7 +19,7 @@ export class GeometryService {
     if (geometry) throw new ConflictException('Geometry already exists');
 
     const newGeometry = await this.prismaService.geometry.create({
-      data: { name, reference, type }
+      data: { name, reference, type: geometryDto.type.toString() }
     });
 
     return new JsonApiResponse<GeometryDto>(HttpStatus.CREATED,"Geometry successfully created",newGeometry);
@@ -53,7 +53,7 @@ export class GeometryService {
 
     const updatedGeometry = await this.prismaService.geometry.update({
       where: { uuid },
-      data: { name, type }
+      data: { name, type: geometryDto.type.toString() }
     });
 
     return new JsonApiResponse<GeometryDto>(HttpStatus.OK,"Geometry successfully updated",updatedGeometry);
