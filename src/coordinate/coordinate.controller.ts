@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { JsonApiResponse } from "../models/json-api-response/json-api-response";
-import { CoordinateDto } from "./dto/coordinateDto";
+import { CoordinateDto } from "./dto/coordinate.dto";
 import { CoordinateService } from "./coordinate.service";
 
 @Controller('coordinates')

@@ -13,13 +13,13 @@ export class GeometryService {
     const { name,reference, type } = geometryDto;
 
     const geometry = await this.prismaService.geometry.findUnique({
-      where: { reference, name }
+      where: { reference }
     });
 
     if (geometry) throw new ConflictException('Geometry already exists');
 
     const newGeometry = await this.prismaService.geometry.create({
-      data: { name, reference, type: geometryDto.type.toString() }
+      data: { name:name.toLowerCase().trim(), reference, type: geometryDto.type.toString() }
     });
 
     return new JsonApiResponse<GeometryDto>(HttpStatus.CREATED,"Geometry successfully created",newGeometry);
