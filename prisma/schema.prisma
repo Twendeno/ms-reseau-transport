@@ -24,7 +24,7 @@ model Coordinate {
 model Geometry {
   uuid        String              @id @default(uuid())
   type        String              @default("LineString")
-  name        String?             @db.VarChar(50)
+  name        String              @db.VarChar(50)
   reference   String              @unique @db.VarChar(50)
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
@@ -41,7 +41,7 @@ model CoordinatePolygon {
   coordinate      Coordinate @relation(fields: [coordinate_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
 
   assignedAt DateTime @default(now())
-  assignedBy String?
+  assignedBy String
 }
 
 // model Department {

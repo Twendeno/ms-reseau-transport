@@ -5,6 +5,7 @@ import { ConfigModule } from "@nestjs/config";
 import { CoordinateGeojsonModule } from './coordinate-geojson/coordinate-geojson.module';
 import { HealthModule } from './health/health.module';
 import { GeometryModule } from './geometry/geometry.module';
+import { CoordinatePolygonModule } from './coordinate-polygon/coordinate-polygon.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { GeometryModule } from './geometry/geometry.module';
     CoordinateGeojsonModule,
     HealthModule,
     GeometryModule,
+    CoordinatePolygonModule,
   ],
   controllers: [],
   providers: []

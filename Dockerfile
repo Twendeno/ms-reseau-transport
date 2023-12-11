@@ -29,13 +29,12 @@ EXPOSE $SERVER_PORT
 WORKDIR /app
 
 COPY package*.json ./
-COPY script.sh ./opt/script.sh
 
 RUN npm i;npm cache clean --force
 
 COPY . .
 
-RUN chmod u+x /opt/script.sh; /bin/sh /opt/script.sh; rm -rf /opt/script.sh
+RUN chmod u+x /app/script.sh; /bin/sh /app/script.sh; rm -rf /app/script.sh
 
 RUN npm run build
 

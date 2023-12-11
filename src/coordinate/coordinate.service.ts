@@ -1,5 +1,5 @@
 import { ConflictException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
-import { CoordinateDto } from "./dto/coordinateDto";
+import { CoordinateDto } from "./dto/coordinate.dto";
 import { PrismaService } from "../prisma/prisma.service";
 import { JsonApiResponse } from "../models/json-api-response/json-api-response";
 
