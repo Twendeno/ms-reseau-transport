@@ -2,8 +2,10 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common"
 import { GeometryService } from "./geometry.service";
 import { JsonApiResponse } from "../models/json-api-response/json-api-response";
 import { GeometryDto } from "./dto/geometryDto";
+import { ApiTags } from "@nestjs/swagger";
 
 @Controller('geometries')
+@ApiTags('geometries')
 export class GeometryController {
 
   constructor(private readonly geometryService: GeometryService) {}

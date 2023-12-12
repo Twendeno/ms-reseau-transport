@@ -2,8 +2,10 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common"
 import { CoordinatePolygonService } from "./coordinate-polygon.service";
 import { JsonApiResponse } from "../models/json-api-response/json-api-response";
 import { CoordinatePolygonDto } from "./dto/coordinate-polygon.dto";
+import { ApiTags } from "@nestjs/swagger";
 
 @Controller('coordinate-polygon')
+@ApiTags('coordinate-polygon')
 export class CoordinatePolygonController {
 
   constructor(private readonly coordinatePolygonService: CoordinatePolygonService) {}

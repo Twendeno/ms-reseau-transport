@@ -2,8 +2,10 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common"
 import { DistrictService } from "./district.service";
 import { JsonApiResponse } from "../models/json-api-response/json-api-response";
 import { DistrictDto } from "./dto/district.dto";
+import { ApiTags } from "@nestjs/swagger";
 
 @Controller('districts')
+@ApiTags('districts')
 export class DistrictController {
 
   constructor(private readonly districtService: DistrictService) {}

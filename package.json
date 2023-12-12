@@ -1,8 +1,8 @@
 {
   "name": "ms-reseau-transport",
   "version": "0.0.3",
-  "description": "",
-  "author": "",
+  "description": "Ce un micro service est une Api restfull qui cartographie le réseau de transport en commun grâce aux coordonnées géographique des arrêts.",
+  "author": "Twendeno",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -26,6 +26,7 @@
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/swagger": "^7.1.16",
     "@nestjs/terminus": "^10.2.0",
     "@prisma/client": "^5.7.0",
     "axios": "^1.6.2",

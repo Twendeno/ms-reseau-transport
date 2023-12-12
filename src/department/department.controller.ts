@@ -2,8 +2,10 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common"
 import { DepartmentService } from "./department.service";
 import { JsonApiResponse } from "../models/json-api-response/json-api-response";
 import { DepartmentDto } from "./dto/department.dto";
+import { ApiTags } from "@nestjs/swagger";
 
 @Controller("departments")
+@ApiTags('departments')
 export class DepartmentController {
 
   constructor(private readonly departmentService: DepartmentService) {
