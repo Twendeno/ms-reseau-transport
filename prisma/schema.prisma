@@ -16,20 +16,22 @@ model Coordinate {
   latitude  Float
   latLng    String              @unique
   isStop    Boolean             @default(false)
+  towns     Town[]
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
   geometry  CoordinatePolygon[]
 }
 
 model Geometry {
-  uuid            String              @id @default(uuid())
-  type            String              @default("LineString")
-  name            String              @unique @db.VarChar(50)
-  reference       String              @unique @db.VarChar(50)
-  department_uuid Department[]
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  coordinates     CoordinatePolygon[]
+  uuid        String              @id @default(uuid())
+  type        String              @default("LineString")
+  name        String              @unique @db.VarChar(50)
+  reference   String              @unique @db.VarChar(50)
+  departments Department[]
+  towns       Town[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  coordinates CoordinatePolygon[]
 }
 
 model CoordinatePolygon {
@@ -49,6 +51,7 @@ model Department {
   uuid           String   @id @default(uuid())
   name           String   @unique @db.VarChar(50)
   area           Float    @default(0)
+  towns          Town[]
   geometry_uuid  String
   geometry       Geometry @relation(fields: [geometry_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
   assignedBy     String
@@ -57,18 +60,22 @@ model Department {
   updatedAt      DateTime @updatedAt
 }
 
-// model Town {
-//   uuid          String   @id @default(uuid())
-//   name          String   @unique
-//   area          String?
-//   longitude     Float
-//   latitude      Float
-//   assignedBy    String
-//   lastModifiedBy String
-//   createdAt     DateTime @default(now())
-//   updatedAt     DateTime @updatedAt
-// }
-//
+model Town {
+  uuid            String     @id @default(uuid())
+  name            String     @unique @db.VarChar(50)
+  area            Float      @default(0)
+  coordinate_uuid String
+  coordinate      Coordinate @relation(fields: [coordinate_uuid], references: [uuid], onDelete: Restrict, onUpdate: Cascade)
+  department_uuid String
+  department      Department @relation(fields: [department_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
+  geometry_uuid   String
+  geometry        Geometry   @relation(fields: [geometry_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
+  assignedBy      String
+  lastModifiedBy  String
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
 // model District {
 //   uuid          String   @id @default(uuid())
 //   name          String   @unique

@@ -7,6 +7,7 @@ import { HealthModule } from './health/health.module';
 import { GeometryModule } from './geometry/geometry.module';
 import { CoordinatePolygonModule } from './coordinate-polygon/coordinate-polygon.module';
 import { DepartmentModule } from './department/department.module';
+import { TownModule } from './town/town.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { DepartmentModule } from './department/department.module';
     GeometryModule,
     CoordinatePolygonModule,
     DepartmentModule,
+    TownModule,
   ],
   controllers: [],
   providers: []
