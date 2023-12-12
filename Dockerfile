@@ -1,44 +1,24 @@
-FROM node:20.9-alpine as build
+FROM node:20.9-alpine AS builder
 
-# Le port d'écoute du serveur
-ARG SERVER_PORT=3000
-ENV SERVER_PORT=${SERVER_PORT}
-
-# L'utilisateur de la base de données
-ARG PG_USERNAME=postgres
-ENV PG_USERNAME=${PG_USERNAME}
-
-# Le mot de passe de la base de données
-ARG PG_PASSWORD=root
-ENV PG_PASSWORD=${PG_PASSWORD}
-
-# Le
-ARG PG_HOST=localhost
-ENV PG_HOST=${PG_HOST}
-
-# Le port d'écoute de la base de données
-ARG PG_PORT=5432
-ENV PG_PORT=${PG_PORT}
-
-# Le nom de la base de données
-ARG PG_DATABASE=msReseauTrans
-ENV PG_DATABASE=${PG_DATABASE}
-
-EXPOSE $SERVER_PORT
-
+# Create app directory
 WORKDIR /app
 
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
+COPY prisma ./prisma/
 
-RUN npm i;npm cache clean --force
+# Install app dependencies
+RUN npm install
 
 COPY . .
 
-RUN chmod u+x /app/script.sh; /bin/sh /app/script.sh; rm -rf /app/script.sh
-
 RUN npm run build
 
-CMD ["/bin/sh", "-c", "npx prisma generate;npm run start:prod"]
+FROM node:20.9-alpine
 
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
 
-
+EXPOSE 3000
+CMD [ "npm", "run", "start:prod" ]
