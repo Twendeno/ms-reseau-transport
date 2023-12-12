@@ -6,6 +6,7 @@ import { CoordinateGeojsonModule } from './coordinate-geojson/coordinate-geojson
 import { HealthModule } from './health/health.module';
 import { GeometryModule } from './geometry/geometry.module';
 import { CoordinatePolygonModule } from './coordinate-polygon/coordinate-polygon.module';
+import { DepartmentModule } from './department/department.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CoordinatePolygonModule } from './coordinate-polygon/coordinate-polygon
     HealthModule,
     GeometryModule,
     CoordinatePolygonModule,
+    DepartmentModule,
   ],
   controllers: [],
   providers: []

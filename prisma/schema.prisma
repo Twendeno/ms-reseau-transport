@@ -22,13 +22,14 @@ model Coordinate {
 }
 
 model Geometry {
-  uuid        String              @id @default(uuid())
-  type        String              @default("LineString")
-  name        String              @db.VarChar(50)
-  reference   String              @unique @db.VarChar(50)
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
-  coordinates CoordinatePolygon[]
+  uuid            String              @id @default(uuid())
+  type            String              @default("LineString")
+  name            String              @unique @db.VarChar(50)
+  reference       String              @unique @db.VarChar(50)
+  department_uuid Department[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  coordinates     CoordinatePolygon[]
 }
 
 model CoordinatePolygon {
@@ -44,16 +45,17 @@ model CoordinatePolygon {
   assignedBy String
 }
 
-// model Department {
-//   uuid          String   @id @default(uuid())
-//   name          String   @unique @db.VarChar(50)
-//   area          String?
-//   polygon       String
-//   user_uid      String
-//   last_user_uid String
-//   createdAt     DateTime @default(now())
-//   updatedAt     DateTime @updatedAt
-// }
+model Department {
+  uuid           String   @id @default(uuid())
+  name           String   @unique @db.VarChar(50)
+  area           Float    @default(0)
+  geometry_uuid  String
+  geometry       Geometry @relation(fields: [geometry_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
+  assignedBy     String
+  lastModifiedBy String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
 
 // model Town {
 //   uuid          String   @id @default(uuid())
@@ -61,8 +63,8 @@ model CoordinatePolygon {
 //   area          String?
 //   longitude     Float
 //   latitude      Float
-//   user_uid      String
-//   last_user_uid String
+//   assignedBy    String
+//   lastModifiedBy String
 //   createdAt     DateTime @default(now())
 //   updatedAt     DateTime @updatedAt
 // }
@@ -71,8 +73,8 @@ model CoordinatePolygon {
 //   uuid          String   @id @default(uuid())
 //   name          String   @unique
 //   area          String
-//   user_uid      String
-//   last_user_uid String
+//   assignedBy    String
+//   lastModifiedBy String
 //   createdAt     DateTime @default(now())
 //   updatedAt     DateTime @updatedAt
 // }
