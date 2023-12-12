@@ -28,9 +28,7 @@ describe('CoordinatePolygonController', () => {
 
   describe('findOne', () => {
     it('should return a coordinatePolygon',  () => {
-      const uuid = "1";
-      const coordinatePolygon = coordinatePolygonModelMock.find(coordinatePolygon => coordinatePolygon.uuid === uuid);
-      expect(controller.findOne('1')).resolves.toEqual(coordinatePolygon);
+      expect(controller.findOne("1")).resolves.toEqual(coordinatePolygonModelMock[0]);
     });
   });
 
