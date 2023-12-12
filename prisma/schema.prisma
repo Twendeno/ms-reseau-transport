@@ -29,6 +29,7 @@ model Geometry {
   reference   String              @unique @db.VarChar(50)
   departments Department[]
   towns       Town[]
+  districts   District[]
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
   coordinates CoordinatePolygon[]
@@ -64,6 +65,7 @@ model Town {
   uuid            String     @id @default(uuid())
   name            String     @unique @db.VarChar(50)
   area            Float      @default(0)
+  districts       District[]
   coordinate_uuid String
   coordinate      Coordinate @relation(fields: [coordinate_uuid], references: [uuid], onDelete: Restrict, onUpdate: Cascade)
   department_uuid String
@@ -76,12 +78,16 @@ model Town {
   updatedAt       DateTime   @updatedAt
 }
 
-// model District {
-//   uuid          String   @id @default(uuid())
-//   name          String   @unique
-//   area          String
-//   assignedBy    String
-//   lastModifiedBy String
-//   createdAt     DateTime @default(now())
-//   updatedAt     DateTime @updatedAt
-// }
+model District {
+  uuid           String   @id @default(uuid())
+  name           String   @unique
+  area           Float    @default(0)
+  town_uuid      String
+  town           Town     @relation(fields: [town_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
+  geometry_uuid  String
+  geometry       Geometry @relation(fields: [geometry_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
+  assignedBy     String
+  lastModifiedBy String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

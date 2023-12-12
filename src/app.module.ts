@@ -8,6 +8,7 @@ import { GeometryModule } from './geometry/geometry.module';
 import { CoordinatePolygonModule } from './coordinate-polygon/coordinate-polygon.module';
 import { DepartmentModule } from './department/department.module';
 import { TownModule } from './town/town.module';
+import { DistrictModule } from './district/district.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TownModule } from './town/town.module';
     CoordinatePolygonModule,
     DepartmentModule,
     TownModule,
+    DistrictModule,
   ],
   controllers: [],
   providers: []
