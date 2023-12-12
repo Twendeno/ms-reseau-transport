@@ -1,6 +1,6 @@
 {
   "name": "ms-reseau-transport",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Ce un micro service est une Api restfull qui cartographie le réseau de transport en commun grâce aux coordonnées géographique des arrêts.",
   "author": "Twendeno",
   "private": true,
