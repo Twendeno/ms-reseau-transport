@@ -4,8 +4,8 @@ FROM node:20.9-alpine AS builder
 WORKDIR /app
 
 # Le port d'écoute du serveur
-ARG SERVER_PORT=3000
-ENV SERVER_PORT=${SERVER_PORT}
+ARG PORT=3000
+ENV PORT=${PORT}
 
 # L'utilisateur de la base de données
 ARG PG_USERNAME=postgres
@@ -34,9 +34,8 @@ COPY script.sh ./script.sh
 
 RUN chmod u+x /app/script.sh; /bin/sh /app/script.sh; rm -rf /app/script.sh
 # Install app dependencies
+RUN npm ci
 RUN npx prisma generate
-RUN npx prisma db push --accept-data-loss
-RUN npm install
 
 COPY . .
 
@@ -48,6 +47,8 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/.env ./
+COPY --from=builder /app/prisma ./prisma
 
-EXPOSE 3000
-CMD [ "npm", "run", "start:prod" ]
+EXPOSE ${SERVER_PORT}
+
+ENTRYPOINT [ "/bin/sh", "-c", "npx prisma migrate deploy; npm run start:prod" ]
