@@ -16,7 +16,7 @@ ARG PG_PASSWORD=root
 ENV PG_PASSWORD=${PG_PASSWORD}
 
 # Le dns
-ARG PG_HOST=localhost
+ARG PG_HOST=postgres
 ENV PG_HOST=${PG_HOST}
 
 # Le port d'écoute de la base de données
