@@ -34,6 +34,8 @@ COPY script.sh ./script.sh
 
 RUN chmod u+x /app/script.sh; /bin/sh /app/script.sh; rm -rf /app/script.sh
 # Install app dependencies
+RUN npx prisma generate
+RUN npx prisma db push --accept-data-loss
 RUN npm install
 
 COPY . .
@@ -46,6 +48,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/.env ./
+COPY --from=build /app/prisma ./prisma
 
 EXPOSE 3000
 CMD [ "npm", "run", "start:prod" ]
