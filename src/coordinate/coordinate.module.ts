@@ -4,6 +4,6 @@ import { CoordinateService } from './coordinate.service';
 
 @Module({
   controllers: [CoordinateController],
-  providers: [CoordinateService]
+  providers: [CoordinateService],
 })
 export class CoordinateModule {}

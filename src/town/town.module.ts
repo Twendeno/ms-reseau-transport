@@ -4,6 +4,6 @@ import { TownService } from './town.service';
 
 @Module({
   controllers: [TownController],
-  providers: [TownService]
+  providers: [TownService],
 })
 export class TownModule {}

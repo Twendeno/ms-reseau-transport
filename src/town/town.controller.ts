@@ -1,12 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
-import { TownService } from "./town.service";
-import { TownDto } from "./dto/town.dto";
-import { ApiTags } from "@nestjs/swagger";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { TownService } from './town.service';
+import { TownDto } from './dto/town.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('towns')
 @ApiTags('towns')
 export class TownController {
-
   constructor(private readonly townService: TownService) {}
 
   @Get()

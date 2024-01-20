@@ -4,6 +4,6 @@ import { GeometryService } from './geometry.service';
 
 @Module({
   controllers: [GeometryController],
-  providers: [GeometryService]
+  providers: [GeometryService],
 })
 export class GeometryModule {}
