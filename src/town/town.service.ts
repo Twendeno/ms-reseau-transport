@@ -1,19 +1,27 @@
-import { ConflictException, HttpStatus, Injectable } from "@nestjs/common";
-import { PrismaService } from "../prisma/prisma.service";
-import { JsonApiResponse } from "../models/json-api-response/json-api-response";
-import { TownDto } from "./dto/town.dto";
+import { ConflictException, HttpStatus, Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { JsonApiResponse } from '../models/json-api-response/json-api-response';
+import { TownDto } from './dto/town.dto';
 
 @Injectable()
 export class TownService {
-
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(townDto: TownDto): Promise<JsonApiResponse<TownDto>> {
-   const { name, area, coordinate_uuid, department_uuid, geometry_uuid, assignedBy, lastModifiedBy } = townDto;
+    const {
+      name,
+      area,
+      coordinate_uuid,
+      department_uuid,
+      geometry_uuid,
+      assignedBy,
+      lastModifiedBy,
+    } = townDto;
 
-   const town = await this.prismaService.town.findUnique({where: {name}});
+    const town = await this.prismaService.town.findUnique({ where: { name } });
 
-   if (town) throw new ConflictException(`Town with name ${name} already exists`);
+    if (town)
+      throw new ConflictException(`Town with name ${name} already exists`);
 
     const createdTown = await this.prismaService.town.create({
       data: {
@@ -23,36 +31,65 @@ export class TownService {
         department_uuid,
         geometry_uuid,
         assignedBy,
-        lastModifiedBy
-      }
+        lastModifiedBy,
+      },
     });
-    return new JsonApiResponse<TownDto>(HttpStatus.CREATED, 'Town created successfully', createdTown);
+    return new JsonApiResponse<TownDto>(
+      HttpStatus.CREATED,
+      'Town created successfully',
+      createdTown,
+    );
   }
 
   async findAll(): Promise<JsonApiResponse<TownDto[]>> {
     const towns = await this.prismaService.town.findMany();
-    return new JsonApiResponse<TownDto[]>(HttpStatus.OK, 'Towns retrieved successfully', towns);
+    return new JsonApiResponse<TownDto[]>(
+      HttpStatus.OK,
+      'Towns retrieved successfully',
+      towns,
+    );
   }
 
   async findOne(uuidOrName: string): Promise<JsonApiResponse<TownDto>> {
-    const town = await this.prismaService.town.findFirst({where: {OR: [{uuid: uuidOrName}, {name: uuidOrName}]}});
+    const town = await this.prismaService.town.findFirst({
+      where: { OR: [{ uuid: uuidOrName }, { name: uuidOrName }] },
+    });
 
-    return new JsonApiResponse<TownDto>(HttpStatus.OK, 'Town retrieved successfully', town);
+    return new JsonApiResponse<TownDto>(
+      HttpStatus.OK,
+      'Town retrieved successfully',
+      town,
+    );
   }
 
-  async update(uuid: string, townDto: TownDto): Promise<JsonApiResponse<TownDto>> {
-    const { name, area, coordinate_uuid, department_uuid, geometry_uuid, assignedBy, lastModifiedBy } = townDto;
+  async update(
+    uuid: string,
+    townDto: TownDto,
+  ): Promise<JsonApiResponse<TownDto>> {
+    const {
+      name,
+      area,
+      coordinate_uuid,
+      department_uuid,
+      geometry_uuid,
+      assignedBy,
+      lastModifiedBy,
+    } = townDto;
 
-    const town = await this.prismaService.town.findUnique({where: {uuid}});
+    const town = await this.prismaService.town.findUnique({ where: { uuid } });
 
-    if (!town) throw new ConflictException(`Town with uuid ${uuid} does not exist`);
+    if (!town)
+      throw new ConflictException(`Town with uuid ${uuid} does not exist`);
 
-    const townWithSameName = await this.prismaService.town.findUnique({where: {name}});
+    const townWithSameName = await this.prismaService.town.findUnique({
+      where: { name },
+    });
 
-    if (townWithSameName) throw new ConflictException(`Town with name ${name} already exists`);
+    if (townWithSameName)
+      throw new ConflictException(`Town with name ${name} already exists`);
 
     const updatedTown = await this.prismaService.town.update({
-      where: {uuid},
+      where: { uuid },
       data: {
         name,
         area,
@@ -60,20 +97,31 @@ export class TownService {
         department_uuid,
         geometry_uuid,
         assignedBy,
-        lastModifiedBy
-      }
+        lastModifiedBy,
+      },
     });
 
-    return new JsonApiResponse<TownDto>(HttpStatus.OK, 'Town updated successfully', updatedTown);
+    return new JsonApiResponse<TownDto>(
+      HttpStatus.OK,
+      'Town updated successfully',
+      updatedTown,
+    );
   }
 
   async delete(uuid: string): Promise<JsonApiResponse<TownDto>> {
-    const town = await this.prismaService.town.findUnique({where: {uuid}});
+    const town = await this.prismaService.town.findUnique({ where: { uuid } });
 
-    if (!town) throw new ConflictException(`Town with uuid ${uuid} does not exist`);
+    if (!town)
+      throw new ConflictException(`Town with uuid ${uuid} does not exist`);
 
-    const deletedTown = await this.prismaService.town.delete({where: {uuid}});
+    const deletedTown = await this.prismaService.town.delete({
+      where: { uuid },
+    });
 
-    return new JsonApiResponse<TownDto>(HttpStatus.OK, 'Town deleted successfully', deletedTown);
+    return new JsonApiResponse<TownDto>(
+      HttpStatus.OK,
+      'Town deleted successfully',
+      deletedTown,
+    );
   }
 }

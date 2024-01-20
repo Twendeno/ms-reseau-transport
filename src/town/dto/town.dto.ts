@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class TownDto {
   @IsString()
@@ -15,17 +15,29 @@ export class TownDto {
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ type: String, description: 'uuid of district', required: true })
+  @ApiProperty({
+    type: String,
+    description: 'uuid of district',
+    required: true,
+  })
   coordinate_uuid: string;
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ type: String, description: 'uuid of department', required: true })
+  @ApiProperty({
+    type: String,
+    description: 'uuid of department',
+    required: true,
+  })
   department_uuid: string;
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ type: String, description: 'uuid of district', required: true })
+  @ApiProperty({
+    type: String,
+    description: 'uuid of district',
+    required: true,
+  })
   geometry_uuid: string;
 
   @IsString()
@@ -35,6 +47,10 @@ export class TownDto {
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ type: String, description: 'uuid of last user', required: true })
+  @ApiProperty({
+    type: String,
+    description: 'uuid of last user',
+    required: true,
+  })
   lastModifiedBy: string;
 }

@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TownController } from './town.controller';
-import { TownService } from "./town.service";
-import { townModelMock } from "./mocks/town.model.mock";
-import { TownServiceMock } from "./mocks/town.service.mock";
+import { TownService } from './town.service';
+import { townModelMock } from './mocks/town.model.mock';
+import { TownServiceMock } from './mocks/town.service.mock';
 
 describe('TownController', () => {
   let controller: TownController;
@@ -21,7 +21,7 @@ describe('TownController', () => {
   });
 
   describe('findAll', () => {
-    it('should return an array of towns',  () => {
+    it('should return an array of towns', () => {
       expect(controller.findAll()).resolves.toEqual(townModelMock);
     });
   });
@@ -34,21 +34,25 @@ describe('TownController', () => {
 
   describe('create', () => {
     it('should create a town', () => {
-      expect(controller.create(townModelMock[0])).resolves.toEqual({ message: "town created" });
+      expect(controller.create(townModelMock[0])).resolves.toEqual({
+        message: 'town created',
+      });
     });
   });
 
   describe('update', () => {
     it('should update a town', () => {
-      expect(controller.update("1",townModelMock[0])).resolves.toEqual({ message: "town updated" });
+      expect(controller.update('1', townModelMock[0])).resolves.toEqual({
+        message: 'town updated',
+      });
     });
   });
 
   describe('delete', () => {
     it('should delete a town', () => {
-      expect(controller.delete("1")).resolves.toEqual({ message: "town deleted" });
+      expect(controller.delete('1')).resolves.toEqual({
+        message: 'town deleted',
+      });
     });
   });
-
-
 });

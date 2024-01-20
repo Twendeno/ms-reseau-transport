@@ -1,16 +1,25 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
-import { JsonApiResponse } from "../models/json-api-response/json-api-response";
-import { CoordinateDto } from "./dto/coordinate.dto";
-import { CoordinateService } from "./coordinate.service";
-import { ApiTags } from "@nestjs/swagger";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { JsonApiResponse } from '../models/json-api-response/json-api-response';
+import { CoordinateDto } from './dto/coordinate.dto';
+import { CoordinateService } from './coordinate.service';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('coordinates')
 @ApiTags('coordinates')
 export class CoordinateController {
-
   constructor(private readonly coordinateService: CoordinateService) {}
   @Post()
-  create(@Body() coordinateDto:CoordinateDto): Promise<JsonApiResponse<CoordinateDto>> {
+  create(
+    @Body() coordinateDto: CoordinateDto,
+  ): Promise<JsonApiResponse<CoordinateDto>> {
     return this.coordinateService.create(coordinateDto);
   }
 
@@ -20,12 +29,17 @@ export class CoordinateController {
   }
 
   @Get(':uuid')
-  findOne(@Param('uuid') uuid: string): Promise<JsonApiResponse<CoordinateDto>> {
+  findOne(
+    @Param('uuid') uuid: string,
+  ): Promise<JsonApiResponse<CoordinateDto>> {
     return this.coordinateService.findOne(uuid);
   }
 
   @Put(':uuid')
-  update(@Param('uuid') uuid: string, @Body() coordinateDto: CoordinateDto): Promise<JsonApiResponse<CoordinateDto>> {
+  update(
+    @Param('uuid') uuid: string,
+    @Body() coordinateDto: CoordinateDto,
+  ): Promise<JsonApiResponse<CoordinateDto>> {
     return this.coordinateService.update(uuid, coordinateDto);
   }
 
@@ -33,5 +47,4 @@ export class CoordinateController {
   delete(@Param('uuid') uuid: string): Promise<JsonApiResponse<CoordinateDto>> {
     return this.coordinateService.delete(uuid);
   }
-
 }
