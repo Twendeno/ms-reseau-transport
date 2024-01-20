@@ -1,7 +1,7 @@
-import { Module } from "@nestjs/common";
-import { CoordinateModule } from "./coordinate/coordinate.module";
-import { PrismaModule } from "./prisma/prisma.module";
-import { ConfigModule } from "@nestjs/config";
+import { Module } from '@nestjs/common';
+import { CoordinateModule } from './coordinate/coordinate.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { ConfigModule } from '@nestjs/config';
 import { CoordinateGeojsonModule } from './coordinate-geojson/coordinate-geojson.module';
 import { HealthModule } from './health/health.module';
 import { GeometryModule } from './geometry/geometry.module';
@@ -24,7 +24,6 @@ import { DistrictModule } from './district/district.module';
     DistrictModule,
   ],
   controllers: [],
-  providers: []
+  providers: [],
 })
-export class AppModule {
-}
+export class AppModule {}

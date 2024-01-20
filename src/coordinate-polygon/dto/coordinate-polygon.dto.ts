@@ -1,15 +1,23 @@
-import { IsNotEmpty, IsString } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class CoordinatePolygonDto{
+export class CoordinatePolygonDto {
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ type: String, description: 'uuid of geometry', required: true })
+  @ApiProperty({
+    type: String,
+    description: 'uuid of geometry',
+    required: true,
+  })
   geometry_uuid: string;
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ type: String, description: 'uuid of coordinate', required: true })
+  @ApiProperty({
+    type: String,
+    description: 'uuid of coordinate',
+    required: true,
+  })
   coordinate_uuid: string;
 
   @IsNotEmpty()

@@ -1,6 +1,6 @@
 export const departmentModelMock = [
   {
-    uuid: "1",
+    uuid: '1',
     name: 'Department 1',
     area: 100,
     geometry_uuid: '1',
@@ -8,11 +8,11 @@ export const departmentModelMock = [
     lastModifiedBy: 'admin',
   },
   {
-    uuid: "2",
+    uuid: '2',
     name: 'Department 2',
     area: 100,
     geometry_uuid: '2',
     assignedBy: 'admin',
     lastModifiedBy: 'admin',
   },
-]
+];

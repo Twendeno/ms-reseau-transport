@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DistrictController } from './district.controller';
-import { DistrictService } from "./district.service";
-import { DistrictServiceMock } from "./mocks/district.service.mock";
-import { districtModelMock } from "./mocks/district.model.mock";
+import { DistrictService } from './district.service';
+import { DistrictServiceMock } from './mocks/district.service.mock';
+import { districtModelMock } from './mocks/district.model.mock';
 
 describe('DistrictController', () => {
   let controller: DistrictController;
@@ -21,32 +21,38 @@ describe('DistrictController', () => {
   });
 
   describe('findAll', () => {
-    it('should return an array of district',  () => {
+    it('should return an array of district', () => {
       expect(controller.findAll()).resolves.toEqual(districtModelMock);
     });
   });
 
   describe('findOne', () => {
-    it('should return a district',  () => {
-      expect(controller.findOne("1")).resolves.toEqual(districtModelMock[0]);
+    it('should return a district', () => {
+      expect(controller.findOne('1')).resolves.toEqual(districtModelMock[0]);
     });
   });
 
   describe('create', () => {
-    it('should return a district',  () => {
-      expect(controller.create(districtModelMock[0])).resolves.toEqual({message: "district created"});
+    it('should return a district', () => {
+      expect(controller.create(districtModelMock[0])).resolves.toEqual({
+        message: 'district created',
+      });
     });
   });
 
   describe('update', () => {
-    it('should return a district',  () => {
-      expect(controller.update("1", districtModelMock[0])).resolves.toEqual({message: "district updated"});
+    it('should return a district', () => {
+      expect(controller.update('1', districtModelMock[0])).resolves.toEqual({
+        message: 'district updated',
+      });
     });
   });
 
   describe('delete', () => {
-    it('should return a district',  () => {
-      expect(controller.delete("1")).resolves.toEqual({message: "district deleted"});
+    it('should return a district', () => {
+      expect(controller.delete('1')).resolves.toEqual({
+        message: 'district deleted',
+      });
     });
   });
 });

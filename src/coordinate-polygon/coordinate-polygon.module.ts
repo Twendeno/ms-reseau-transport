@@ -4,6 +4,6 @@ import { CoordinatePolygonService } from './coordinate-polygon.service';
 
 @Module({
   controllers: [CoordinatePolygonController],
-  providers: [CoordinatePolygonService]
+  providers: [CoordinatePolygonService],
 })
 export class CoordinatePolygonModule {}

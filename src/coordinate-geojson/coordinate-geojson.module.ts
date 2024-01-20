@@ -4,6 +4,6 @@ import { CoordinateGeojsonService } from './coordinate-geojson.service';
 
 @Module({
   controllers: [CoordinateGeojsonController],
-  providers: [CoordinateGeojsonService]
+  providers: [CoordinateGeojsonService],
 })
 export class CoordinateGeojsonModule {}
