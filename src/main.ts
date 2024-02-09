@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as fs from 'fs';
 import * as path from 'path';
+import { json, urlencoded } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -17,6 +18,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe()); // 👈
   app.use(helmet());
   app.enableCors();
+
+  app.use(json({ limit: '50mb' }));
+  app.use(urlencoded({ extended: true, limit: '50mb' }));
 
   // Récupérer la version depuis package.json
   const packageJsonPath = path.resolve(__dirname, '..', 'package.json');

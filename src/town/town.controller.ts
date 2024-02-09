@@ -6,19 +6,26 @@ import {
   Param,
   Post,
   Put,
+  Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TownService } from './town.service';
 import { TownDto } from './dto/town.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('towns')
 @ApiTags('towns')
+@UseInterceptors(CacheInterceptor)
 export class TownController {
   constructor(private readonly townService: TownService) {}
 
   @Get()
-  findAll() {
-    return this.townService.findAll();
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('perPage') perPage: number = 10,
+  ) {
+    return this.townService.findAll(Number(page), Number(perPage));
   }
 
   @Get(':uuidOrName')

@@ -1,5 +1,5 @@
 import {
-  Feature, FeatureCollection,
+  Feature,
   GeojsonType,
   LineString,
   MultiLineString,
@@ -29,16 +29,16 @@ export class Transformer<T = any> {
     switch (this.type) {
       case GeojsonType.Point:
         response = new Point(this.type, [
-          this.data[0].coordinate.latitude,
           this.data[0].coordinate.longitude,
+          this.data[0].coordinate.latitude,
         ]);
         break;
       case GeojsonType.MultiPoint:
         response = new MultiPoint(
           this.type,
           (this.data as any).map((data) => [
-            data.coordinate.latitude,
             data.coordinate.longitude,
+            data.coordinate.latitude,
           ]),
         );
         break;
@@ -46,24 +46,24 @@ export class Transformer<T = any> {
         response = new LineString(
           this.type,
           (this.data as any).map((data) => [
-            data.coordinate.latitude,
             data.coordinate.longitude,
+            data.coordinate.latitude,
           ]),
         );
         break;
       case GeojsonType.MultiLineString:
         response = new MultiLineString(this.type, [
           (this.data as any).map((data) => [
-            data.coordinate.latitude,
             data.coordinate.longitude,
+            data.coordinate.latitude,
           ]),
         ]);
         break;
       case GeojsonType.Polygon:
         response = new Polygon(this.type, [
           (this.data as any).map((data) => [
-            data.coordinate.latitude,
             data.coordinate.longitude,
+            data.coordinate.latitude,
           ]),
         ]);
         break;
@@ -71,8 +71,8 @@ export class Transformer<T = any> {
         response = new MultiPolygon(this.type, [
           [
             (this.data as any).map((data) => [
-              data.coordinate.latitude,
               data.coordinate.longitude,
+              data.coordinate.latitude,
             ]),
           ],
         ]);
@@ -82,12 +82,13 @@ export class Transformer<T = any> {
     return response;
   }
 
-  transform(isFeature: boolean = true) {
-    if (isFeature)
+  transform(isFeature: string ) {
+    if (isFeature.trim().toLowerCase().toString() === 'feature') {
       return new Feature(GeojsonType.Feature, this.filterData(), {
         name: this.data[0].coordinate.name,
         address: this.data[0].coordinate.address,
       });
+    }
     return this.filterData();
   }
 }

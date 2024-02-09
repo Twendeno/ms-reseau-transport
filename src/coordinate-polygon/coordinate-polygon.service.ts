@@ -1,7 +1,9 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from '../prisma/prisma.service';
 import { CoordinatePolygonDto } from './dto/coordinate-polygon.dto';
 import { JsonApiResponse } from '../models/json-api-response/json-api-response';
+import { Util } from '../utils/util';
+import { RandomValueGenerator } from "../models/random-value-generator/random-value-generator";
 
 @Injectable()
 export class CoordinatePolygonService {
@@ -10,22 +12,32 @@ export class CoordinatePolygonService {
   async create(
     coordinatePolygonDto: CoordinatePolygonDto,
   ): Promise<JsonApiResponse<CoordinatePolygonDto>> {
-    const { geometry_uuid, coordinate_uuid, assignedBy } = coordinatePolygonDto;
+
+    coordinatePolygonDto.reference = RandomValueGenerator.generateRandomAlphaNumeric(12);
+    coordinatePolygonDto.name = `${coordinatePolygonDto.departure} - ${coordinatePolygonDto.arrival}`;
+
+    const { geometry_uuid, coordinate_uuid, assignedBy,departure,arrival,isOnline,name,reference } = coordinatePolygonDto;
+
+    const coordinateExistOnCoordinatePolygon = await this.prismaService.coordinatePolygon.findFirst({
+      where: { AND: [{ coordinate_uuid }, { geometry_uuid }] },
+    });
+
+    if (coordinateExistOnCoordinatePolygon) throw new ConflictException(`coordinate already exist on geometry`)
 
     const geometry = await this.prismaService.geometry.findUnique({
       where: { uuid: geometry_uuid },
     });
 
     if (!geometry)
-      new NotFoundException(`geometry with uuid ${geometry_uuid} not found`);
+      throw new NotFoundException(`geometry not found`);
 
     const coordinate = await this.prismaService.coordinate.findUnique({
       where: { uuid: coordinate_uuid },
     });
 
     if (!coordinate)
-      new NotFoundException(
-        `coordinate with uuid ${coordinate_uuid} not found`,
+      throw new NotFoundException(
+        `coordinate not found`,
       );
 
     const coordinatePolygon = await this.prismaService.coordinatePolygon.create(
@@ -41,9 +53,20 @@ export class CoordinatePolygonService {
     );
   }
 
-  async findAll(): Promise<JsonApiResponse<CoordinatePolygonDto[]>> {
+  async findAll(
+    page: number,
+    perPage: number,
+  ): Promise<JsonApiResponse<CoordinatePolygonDto[]>> {
+    const skip = Number((page - 1) * perPage);
+    const take = Number(perPage);
+    const total = await this.prismaService.coordinatePolygon.count();
+    const meta = Util.getMetadata(total, page, perPage);
+
     const coordinatePolygons =
       await this.prismaService.coordinatePolygon.findMany({
+        skip,
+        take,
+        distinct: ['geometry_uuid'],
         include: {
           geometry: {
             select: {
@@ -51,14 +74,12 @@ export class CoordinatePolygonService {
               name: true,
               type: true,
               reference: true,
-            },
-          },
-          coordinate: {
-            select: {
-              uuid: true,
-              latitude: true,
-              longitude: true,
-              isStop: true,
+              _count: true,
+              coordinates: {
+                select: {
+                  coordinate_uuid: true,
+                },
+              },
             },
           },
         },
@@ -67,6 +88,7 @@ export class CoordinatePolygonService {
       HttpStatus.OK,
       'coordinate found',
       coordinatePolygons,
+      meta,
     );
   }
 
@@ -86,12 +108,23 @@ export class CoordinatePolygonService {
     uuid: string,
     coordinatePolygonDto: CoordinatePolygonDto,
   ): Promise<JsonApiResponse<CoordinatePolygonDto>> {
+
+    coordinatePolygonDto.name = `${coordinatePolygonDto.departure} - ${coordinatePolygonDto.arrival}`;
+    const { geometry_uuid, coordinate_uuid,departure,arrival,isOnline,name } = coordinatePolygonDto;
+
+    const coordinateExistOnCoordinatePolygon = await this.prismaService.coordinatePolygon.findFirst({
+      where: { AND: [{ coordinate_uuid }, { geometry_uuid }] },
+    });
+
+    if (coordinateExistOnCoordinatePolygon) throw new ConflictException(`coordinate already exist on geometry`)
+
     const coordinatePolygon = await this.prismaService.coordinatePolygon.update(
       {
         where: { uuid },
         data: coordinatePolygonDto,
       },
     );
+
     return new JsonApiResponse<CoordinatePolygonDto>(
       HttpStatus.OK,
       'coordinate updated',

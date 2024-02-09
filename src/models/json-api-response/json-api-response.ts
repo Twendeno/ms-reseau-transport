@@ -3,5 +3,6 @@ export class JsonApiResponse<T = any> {
     public readonly statusCode: number,
     public readonly message: string,
     public readonly data: T,
+    public readonly meta?: any,
   ) {}
 }
