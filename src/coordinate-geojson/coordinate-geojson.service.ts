@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Transformer } from '../models/transformer/transformer';
 import { GeojsonType } from '../models/geojson-api-response/geojson-api-response';
+import { isBoolean } from 'class-validator';
 
 @Injectable()
 export class CoordinateGeojsonService {
@@ -10,7 +11,8 @@ export class CoordinateGeojsonService {
   async geojsonByTypeGeometryUuid(
     uuidOrRefOrName: string,
     type: string = GeojsonType.LineString,
-    isStop: boolean = false,
+    isStop: boolean,
+    isFeature: boolean
   ) {
     const coordinates = await this.prismaService.coordinatePolygon.findMany({
       where: {
@@ -30,7 +32,7 @@ export class CoordinateGeojsonService {
             geometry: { type },
           },
           {
-            coordinate: { isStop: isStop },
+            coordinate: { isStop: !Boolean(isStop) },
           },
         ],
       },
@@ -39,6 +41,8 @@ export class CoordinateGeojsonService {
           select: {
             latitude: true,
             longitude: true,
+            name: true,
+            address: true,
           },
         },
       },
@@ -46,6 +50,6 @@ export class CoordinateGeojsonService {
 
     if (!coordinates) throw new NotFoundException('Data not found');
 
-    return new Transformer(coordinates, type).transform();
+    return new Transformer(coordinates, type).transform(isFeature);
   }
 }

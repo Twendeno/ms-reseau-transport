@@ -15,7 +15,7 @@ export class CoordinateService {
   async create(
     coordinateDto: CoordinateDto,
   ): Promise<JsonApiResponse<CoordinateDto>> {
-    const { latitude, longitude, isStop } = coordinateDto;
+    const { latitude, longitude, isStop, name, address } = coordinateDto;
     const latLng = [latitude, longitude].toString();
 
     const coordinate = await this.prismaService.coordinate.findUnique({
@@ -25,7 +25,7 @@ export class CoordinateService {
     if (coordinate) throw new ConflictException('Coordinate already exists');
 
     const newCoordinate = await this.prismaService.coordinate.create({
-      data: { latitude, longitude, latLng, isStop },
+      data: { latitude, longitude, latLng, name, address, isStop },
     });
 
     return new JsonApiResponse<CoordinateDto>(
@@ -66,7 +66,7 @@ export class CoordinateService {
     uuid: string,
     coordinateDto: CoordinateDto,
   ): Promise<JsonApiResponse<CoordinateDto>> {
-    const { latitude, longitude, isStop } = coordinateDto;
+    const { latitude, longitude, name, address, isStop } = coordinateDto;
     const latLng = [latitude, longitude].toString();
 
     // Check if the coordinate exists
@@ -87,7 +87,7 @@ export class CoordinateService {
     // Update the coordinate
     const updatedCoordinate = await this.prismaService.coordinate.update({
       where: { uuid },
-      data: { latitude, longitude, latLng, isStop },
+      data: { latitude, longitude, latLng, name, address, isStop },
     });
 
     return new JsonApiResponse<CoordinateDto>(

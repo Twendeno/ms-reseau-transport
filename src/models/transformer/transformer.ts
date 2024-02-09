@@ -6,8 +6,8 @@ import {
   MultiPoint,
   MultiPolygon,
   Point,
-  Polygon
-} from "../geojson-api-response/geojson-api-response";
+  Polygon,
+} from '../geojson-api-response/geojson-api-response';
 
 export class Transformer<T = any> {
   type: string;
@@ -18,24 +18,23 @@ export class Transformer<T = any> {
     this.data = data;
   }
 
-  transform():
+  filterData():
     | Point
     | MultiPoint
     | LineString
     | MultiLineString
     | Polygon
-    | MultiPolygon
-    | Feature
-    | FeatureCollection {
+    | MultiPolygon {
+    let response: any = {};
     switch (this.type) {
       case GeojsonType.Point:
-        return new Point(this.type, [
+        response = new Point(this.type, [
           this.data[0].coordinate.latitude,
           this.data[0].coordinate.longitude,
         ]);
         break;
       case GeojsonType.MultiPoint:
-        return new MultiPoint(
+        response = new MultiPoint(
           this.type,
           (this.data as any).map((data) => [
             data.coordinate.latitude,
@@ -44,7 +43,7 @@ export class Transformer<T = any> {
         );
         break;
       case GeojsonType.LineString:
-        return new LineString(
+        response = new LineString(
           this.type,
           (this.data as any).map((data) => [
             data.coordinate.latitude,
@@ -53,7 +52,7 @@ export class Transformer<T = any> {
         );
         break;
       case GeojsonType.MultiLineString:
-        return new MultiLineString(this.type, [
+        response = new MultiLineString(this.type, [
           (this.data as any).map((data) => [
             data.coordinate.latitude,
             data.coordinate.longitude,
@@ -61,13 +60,34 @@ export class Transformer<T = any> {
         ]);
         break;
       case GeojsonType.Polygon:
-        return new Polygon(this.type, [
+        response = new Polygon(this.type, [
           (this.data as any).map((data) => [
             data.coordinate.latitude,
             data.coordinate.longitude,
           ]),
         ]);
         break;
+      case GeojsonType.MultiPolygon:
+        response = new MultiPolygon(this.type, [
+          [
+            (this.data as any).map((data) => [
+              data.coordinate.latitude,
+              data.coordinate.longitude,
+            ]),
+          ],
+        ]);
+        break;
     }
+
+    return response;
+  }
+
+  transform(isFeature: boolean = true) {
+    if (isFeature)
+      return new Feature(GeojsonType.Feature, this.filterData(), {
+        name: this.data[0].coordinate.name,
+        address: this.data[0].coordinate.address,
+      });
+    return this.filterData();
   }
 }

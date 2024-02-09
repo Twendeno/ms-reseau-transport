@@ -59,6 +59,7 @@ export class Feature {
     public readonly type: string,
     public readonly properties: any,
     public readonly geometry: any,
+    public readonly properties?: any,
   ) {}
 }
 

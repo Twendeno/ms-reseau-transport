@@ -2,10 +2,12 @@ import {
   IsBoolean,
   IsLatitude,
   IsLatLong,
+  IsLocale,
   IsLongitude,
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsString,
   Max,
   Min,
 } from 'class-validator';
@@ -45,6 +47,7 @@ export class CoordinateDto {
     description: 'Is stop',
     example: false,
     required: false,
+    default: false,
   })
   readonly isStop: boolean = false;
 
@@ -59,4 +62,24 @@ export class CoordinateDto {
   get latLng(): string {
     return [this.latitude, this.longitude].toString();
   }
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    type: String,
+    description: 'Stop name',
+    example: 'Sonko',
+    required: false,
+  })
+  readonly name: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    type: String,
+    description: 'address',
+    example: 'Boulevard du General de Gaulle',
+    required: false,
+  })
+  readonly address: string;
 }
