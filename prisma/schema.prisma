@@ -22,23 +22,37 @@ model Coordinate {
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
   geometry  CoordinatePolygon[]
+
+  @@index([latLng, name, address])
 }
 
 model Geometry {
-  uuid        String              @id @default(uuid())
-  type        String              @default("LineString")
-  name        String              @unique @db.VarChar(50)
-  reference   String              @unique @db.VarChar(50)
-  departments Department[]
-  towns       Town[]
-  districts   District[]
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
-  coordinates CoordinatePolygon[]
+  uuid            String              @id @default(uuid())
+  type            String              @default("LineString")
+  name            String              @unique @db.VarChar(50)
+  reference       String              @unique @db.VarChar(50)
+  department_uuid String
+  departments     Department          @relation(fields: [department_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
+  town_uuid       String
+  towns           Town                @relation(fields: [town_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
+  geodata         Json?
+  assignedBy      String
+  lastModifiedBy  String
+  color           String              @unique @db.VarChar(7)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  coordinates     CoordinatePolygon[]
+
+  @@index([reference, name])
 }
 
 model CoordinatePolygon {
-  uuid String @id @default(uuid())
+  uuid      String  @id @default(uuid())
+  name      String  @db.VarChar(50)
+  departure String  @db.VarChar(50)
+  arrival   String  @db.VarChar(50)
+  reference String  @unique @db.VarChar(50)
+  isOnline  Boolean @default(false)
 
   geometry_uuid String
   geometry      Geometry @relation(fields: [geometry_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
@@ -51,16 +65,18 @@ model CoordinatePolygon {
 }
 
 model Department {
-  uuid           String   @id @default(uuid())
-  name           String   @unique @db.VarChar(50)
-  area           Float    @default(0)
+  uuid           String     @id @default(uuid())
+  name           String     @unique @db.VarChar(50)
+  area           Float      @default(0)
   towns          Town[]
-  geometry_uuid  String
-  geometry       Geometry @relation(fields: [geometry_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
+  geodata        Json?
+  geometries     Geometry[]
   assignedBy     String
   lastModifiedBy String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@index([name])
 }
 
 model Town {
@@ -68,28 +84,31 @@ model Town {
   name            String     @unique @db.VarChar(50)
   area            Float      @default(0)
   districts       District[]
+  geodata         Json?
   coordinate_uuid String
   coordinate      Coordinate @relation(fields: [coordinate_uuid], references: [uuid], onDelete: Restrict, onUpdate: Cascade)
   department_uuid String
   department      Department @relation(fields: [department_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
-  geometry_uuid   String
-  geometry        Geometry   @relation(fields: [geometry_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
+  geometry        Geometry[]
   assignedBy      String
   lastModifiedBy  String
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
+
+  @@index([name])
 }
 
 model District {
   uuid           String   @id @default(uuid())
   name           String   @unique
   area           Float    @default(0)
+  geodata        Json?
   town_uuid      String
   town           Town     @relation(fields: [town_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
-  geometry_uuid  String
-  geometry       Geometry @relation(fields: [geometry_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
   assignedBy     String
   lastModifiedBy String
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  @@index([name])
 }

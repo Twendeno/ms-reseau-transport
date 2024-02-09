@@ -7,17 +7,30 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { JsonApiResponse } from '../models/json-api-response/json-api-response';
 import { DistrictDto } from './dto/district.dto';
+import { Util } from '../utils/util';
 
 @Injectable()
 export class DistrictService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findAll(): Promise<JsonApiResponse<DistrictDto[]>> {
-    const districts = await this.prismaService.district.findMany();
+  async findAll(
+    page: number,
+    perPage: number,
+  ): Promise<JsonApiResponse<DistrictDto[]>> {
+    const skip = Number((page - 1) * perPage);
+    const take = Number(perPage);
+    const total = await this.prismaService.district.count();
+    const meta = Util.getMetadata(total, page, perPage);
+
+    const districts = await this.prismaService.district.findMany({
+      skip,
+      take,
+    });
     return new JsonApiResponse<DistrictDto[]>(
       HttpStatus.OK,
       'Success',
       districts,
+      meta,
     );
   }
 
@@ -75,13 +88,6 @@ export class DistrictService {
 
     if (!checkDistrictUUid)
       throw new NotFoundException(`District with uuid ${uuid} not found`);
-
-    const checkDistrictName = await this.prismaService.district.findUnique({
-      where: { name },
-    });
-
-    if (checkDistrictName)
-      throw new ConflictException(`District with name ${name} already exists`);
 
     const district = await this.prismaService.district.update({
       where: {

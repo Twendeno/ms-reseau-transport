@@ -1,7 +1,60 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CoordinatePolygonDto {
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    type: String,
+    description: 'Direction name',
+    example: 'Grand marche - Centre ville ',
+    required: false,
+    default: 'Grand marche - Centre ville',
+  })
+  name: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    type: String,
+    description: 'Direction name',
+    example: 'Grand marche',
+    required: true,
+    default: 'Grand marche',
+  })
+  readonly departure: string;
+
+  @IsString()
+  @ApiProperty({
+    type: String,
+    description: 'Direction name',
+    example: 'Centre ville ',
+    required: true,
+    default: 'Centre ville',
+  })
+  readonly arrival: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    type: Boolean,
+    description: 'Is online',
+    example: false,
+    required: false,
+    default: false,
+  })
+  readonly isOnline: boolean = false;
+
+  @IsNotEmpty()
+  @IsOptional()
+  @ApiProperty({
+    type: String,
+    description: 'Description of geometry',
+    required: false,
+  })
+  reference: string;
+
   @IsNotEmpty()
   @IsString()
   @ApiProperty({

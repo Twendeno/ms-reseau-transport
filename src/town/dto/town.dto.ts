@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsJSON,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class TownDto {
@@ -33,15 +39,6 @@ export class TownDto {
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({
-    type: String,
-    description: 'uuid of district',
-    required: true,
-  })
-  geometry_uuid: string;
-
-  @IsString()
-  @IsNotEmpty()
   @ApiProperty({ type: String, description: 'uuid of user', required: true })
   assignedBy: string;
 
@@ -53,4 +50,15 @@ export class TownDto {
     required: true,
   })
   lastModifiedBy: string;
+
+  @IsNotEmpty()
+  @IsJSON()
+  @IsOptional()
+  @ApiProperty({
+    type: String,
+    description: 'Geojson of department',
+    required: true,
+    example: '{"type":"LineString","coordinates":[[0,0],[1,1]]}',
+  })
+  geodata: any;
 }

@@ -6,20 +6,27 @@ import {
   Param,
   Post,
   Put,
+  Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { GeometryService } from './geometry.service';
 import { JsonApiResponse } from '../models/json-api-response/json-api-response';
 import { GeometryDto } from './dto/geometryDto';
 import { ApiTags } from '@nestjs/swagger';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('geometries')
+@UseInterceptors(CacheInterceptor)
 @ApiTags('geometries')
 export class GeometryController {
   constructor(private readonly geometryService: GeometryService) {}
 
   @Get()
-  findAll(): Promise<JsonApiResponse<GeometryDto[]>> {
-    return this.geometryService.findAll();
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('perPage') perPage: number = 10,
+  ): Promise<JsonApiResponse<GeometryDto[]>> {
+    return this.geometryService.findAll(Number(page), Number(perPage));
   }
 
   @Get(':uuid')

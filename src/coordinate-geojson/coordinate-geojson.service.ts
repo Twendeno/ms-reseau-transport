@@ -12,7 +12,7 @@ export class CoordinateGeojsonService {
     uuidOrRefOrName: string,
     type: string = GeojsonType.LineString,
     isStop: boolean,
-    isFeature: boolean,
+    isFeature: string = 'feature',
   ) {
     const coordinates = await this.prismaService.coordinatePolygon.findMany({
       where: {
@@ -50,6 +50,6 @@ export class CoordinateGeojsonService {
 
     if (!coordinates) throw new NotFoundException('Data not found');
 
-    return new Transformer(coordinates, type).transform(isFeature);
+    return new Transformer(coordinates, type).transform(isFeature.toLowerCase().trim().toString());
   }
 }

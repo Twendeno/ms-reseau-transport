@@ -6,20 +6,27 @@ import {
   Param,
   Post,
   Put,
+  Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { DepartmentService } from './department.service';
 import { JsonApiResponse } from '../models/json-api-response/json-api-response';
 import { DepartmentDto } from './dto/department.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('departments')
 @ApiTags('departments')
+@UseInterceptors(CacheInterceptor)
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
   @Get()
-  findAll(): Promise<JsonApiResponse<DepartmentDto[]>> {
-    return this.departmentService.findAll();
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('perPage') perPage: number = 10,
+  ): Promise<JsonApiResponse<DepartmentDto[]>> {
+    return this.departmentService.findAll(page, perPage);
   }
 
   @Get(':uuidOrName')
