@@ -89,7 +89,6 @@ export class Transformer<T = any> {
         address: this.data[0].coordinate.address,
       });
     }
-
     return this.filterData();
   }
 }

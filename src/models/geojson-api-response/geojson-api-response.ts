@@ -57,12 +57,13 @@ export class GeometryCollection {
 export class Feature {
   constructor(
     public readonly type: string,
+    public readonly properties: any,
     public readonly geometry: any,
     public readonly properties?: any,
   ) {}
 }
 
-export class FeatureCollection {
+export class FeatureCollection <T = any>{
   constructor(
     public readonly type: string,
     public readonly features: any[],

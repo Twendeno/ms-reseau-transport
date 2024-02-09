@@ -24,7 +24,6 @@ export class CoordinatePolygonService {
 
     if (coordinateExistOnCoordinatePolygon) throw new ConflictException(`coordinate already exist on geometry`)
 
-
     const geometry = await this.prismaService.geometry.findUnique({
       where: { uuid: geometry_uuid },
     });

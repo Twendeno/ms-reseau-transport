@@ -9,7 +9,7 @@ import * as path from 'path';
 import { json, urlencoded } from 'express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
@@ -45,6 +45,16 @@ async function bootstrap() {
 
   SwaggerModule.setup('api-docs', app, document);
 
+  // Redirection vers Swagger lorsque l'utilisateur accède à la racine
+  app.useGlobalFilters({
+    async catch(_, host) {
+      const ctx = host.switchToHttp();
+      const response = ctx.getResponse();
+      response.redirect('/api-docs');
+    },
+  });
+
   await app.listen(process.env.PORT);
 }
+
 bootstrap();

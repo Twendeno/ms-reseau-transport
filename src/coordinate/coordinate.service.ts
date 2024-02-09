@@ -22,7 +22,7 @@ export class CoordinateService {
     const latLng = [latitude, longitude].toString();
 
     const coordinate = await this.prismaService.coordinate.findUnique({
-      where: { latLng }
+      where: { latLng },
     });
 
     if (coordinate) throw new ConflictException("Coordinate already exists");
@@ -85,7 +85,7 @@ export class CoordinateService {
 
     // Check if the coordinate exists
     const coordinate = await this.prismaService.coordinate.findUnique({
-      where: { uuid }
+      where: { uuid },
     });
 
     if (!coordinate) throw new NotFoundException("Coordinate not found");
@@ -105,13 +105,13 @@ export class CoordinateService {
 
   async delete(uuid: string): Promise<JsonApiResponse<CoordinateDto>> {
     const coordinate = await this.prismaService.coordinate.findUnique({
-      where: { uuid }
+      where: { uuid },
     });
 
     if (!coordinate) throw new NotFoundException("Coordinate not found");
 
     await this.prismaService.coordinate.delete({
-      where: { uuid }
+      where: { uuid },
     });
 
     return new JsonApiResponse<CoordinateDto>(

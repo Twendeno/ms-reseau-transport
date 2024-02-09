@@ -44,7 +44,7 @@ export class DepartmentService {
       where: { OR: [{ uuid: uuidOrName }, { name: uuidOrName }] }
     });
 
-    if (!department) throw new NotFoundException("Department not found");
+    if (!department) throw new NotFoundException('Department not found');
 
     return new JsonApiResponse<DepartmentDto>(
       HttpStatus.OK,
@@ -62,7 +62,7 @@ export class DepartmentService {
       where: { name }
     });
 
-    if (department) throw new ConflictException("Department already exists");
+    if (department) throw new ConflictException('Department already exists');
 
     const newDepartment = await this.prismaService.department.create({
       data: { name, area, geodata, assignedBy, lastModifiedBy }
@@ -85,7 +85,7 @@ export class DepartmentService {
       where: { uuid }
     });
 
-    if (!department) throw new NotFoundException("Department not found");
+    if (!department) throw new NotFoundException('Department not found');
 
     const updatedDepartment = await this.prismaService.department.update({
       where: { uuid },
@@ -104,7 +104,7 @@ export class DepartmentService {
       where: { uuid }
     });
 
-    if (!department) throw new NotFoundException("Department not found");
+    if (!department) throw new NotFoundException('Department not found');
 
     const deletedDepartment = await this.prismaService.department.delete({
       where: { uuid }
