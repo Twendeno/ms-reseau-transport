@@ -1,5 +1,5 @@
 import {
-  Feature,
+  Feature, FeatureCollection,
   GeojsonType,
   LineString,
   MultiLineString,

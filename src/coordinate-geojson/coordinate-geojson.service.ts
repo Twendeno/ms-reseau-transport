@@ -12,7 +12,7 @@ export class CoordinateGeojsonService {
     uuidOrRefOrName: string,
     type: string = GeojsonType.LineString,
     isStop: boolean,
-    isFeature: boolean,
+    isFeature: boolean
   ) {
     const coordinates = await this.prismaService.coordinatePolygon.findMany({
       where: {
