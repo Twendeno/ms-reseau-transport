@@ -1,8 +1,7 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CoordinatePolygonDto {
-
   @IsOptional()
   @IsString()
   @ApiProperty({
@@ -52,6 +51,8 @@ export class CoordinatePolygonDto {
     type: String,
     description: 'Description of geometry',
     required: false,
+    example: 'WKGKUYQL',
+    default: 'WKGKUYQL',
   })
   reference: string;
 
@@ -61,6 +62,8 @@ export class CoordinatePolygonDto {
     type: String,
     description: 'uuid of geometry',
     required: true,
+    example: 'uuid',
+    default: 'uuid',
   })
   geometry_uuid: string;
 
@@ -70,11 +73,19 @@ export class CoordinatePolygonDto {
     type: String,
     description: 'uuid of coordinate',
     required: true,
+    example: 'uuid',
+    default: 'uuid',
   })
   coordinate_uuid: string;
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ type: String, description: 'uuid of user', required: true })
+  @ApiProperty({
+    type: String,
+    description: 'uuid of user',
+    required: true,
+    example: 'uuid',
+    default: 'uuid',
+  })
   assignedBy: string;
 }

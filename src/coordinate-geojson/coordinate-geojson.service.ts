@@ -50,6 +50,66 @@ export class CoordinateGeojsonService {
 
     if (!coordinates) throw new NotFoundException('Data not found');
 
-    return new Transformer(coordinates, type).transform(isFeature.toLowerCase().trim().toString());
+    return new Transformer(coordinates, type).transform(
+      isFeature.toLowerCase().trim().toString(),
+    );
+  }
+
+  async geojsonCollection() {
+    const dataCollection = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+    const geometries = await this.prismaService.geometry.findMany({
+      select: {
+        geodata: true,
+        color: true,
+        name: true,
+      },
+    });
+    geometries.forEach((geometry) => {
+      const geodata = JSON.parse(geometry.geodata.toString());
+      let feature = null;
+      if (Object.keys(geodata).includes('coordinates')) {
+        feature = {
+          type: 'Feature',
+          geometry: geodata,
+          properties: {
+            name: geometry.name,
+            color: geometry.color,
+          },
+        };
+      }
+      if (feature) {
+        dataCollection.features.push(feature);
+      }
+    });
+
+    return dataCollection;
+  }
+
+  async geojsonClusterStation() {
+    const dataCluster = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+    const stations = await this.prismaService.coordinate.findMany({
+      select: { latitude: true, longitude: true, name: true },
+      where: { isStop: true },
+    });
+    stations.forEach((station) => {
+      dataCluster.features.push({
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [station.latitude, station.longitude],
+        },
+        properties: {
+          name: station.name,
+        },
+      });
+    });
+
+    return dataCluster;
   }
 }

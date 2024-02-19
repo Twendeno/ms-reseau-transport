@@ -3,12 +3,13 @@ import { PrismaService } from '../prisma/prisma.service';
 import { JsonApiResponse } from '../models/json-api-response/json-api-response';
 import { TownDto } from './dto/town.dto';
 import { Util } from '../utils/util';
+import { TownEntity } from './models/town.entity';
 
 @Injectable()
 export class TownService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(townDto: TownDto): Promise<JsonApiResponse<TownDto>> {
+  async create(townDto: TownDto): Promise<JsonApiResponse<TownEntity>> {
     const {
       name,
       area,
@@ -35,17 +36,32 @@ export class TownService {
         geodata,
       },
     });
-    return new JsonApiResponse<TownDto>(
+    return new JsonApiResponse<TownEntity>(
       HttpStatus.CREATED,
       'Town created successfully',
       createdTown,
     );
   }
 
-  async findAll(
+  async findAll(): Promise<JsonApiResponse<TownEntity[]>> {
+    const towns = await this.prismaService.town.findMany({
+      include: {
+        _count: true,
+        geometry: true,
+        districts: true,
+      },
+    });
+    return new JsonApiResponse<TownEntity[]>(
+      HttpStatus.OK,
+      'Towns retrieved successfully',
+      towns,
+    );
+  }
+
+  async findAllPaginate(
     page: number,
     perPage: number,
-  ): Promise<JsonApiResponse<TownDto[]>> {
+  ): Promise<JsonApiResponse<TownEntity[]>> {
     const skip = Number((page - 1) * perPage);
     const take = Number(perPage);
     const total = await this.prismaService.town.count();
@@ -56,11 +72,11 @@ export class TownService {
       take,
       include: {
         _count: true,
-        geometry:true,
-        districts:true
-      }
+        geometry: true,
+        districts: true,
+      },
     });
-    return new JsonApiResponse<TownDto[]>(
+    return new JsonApiResponse<TownEntity[]>(
       HttpStatus.OK,
       'Towns retrieved successfully',
       towns,
@@ -68,12 +84,12 @@ export class TownService {
     );
   }
 
-  async findOne(uuidOrName: string): Promise<JsonApiResponse<TownDto>> {
+  async findOne(uuidOrName: string): Promise<JsonApiResponse<TownEntity>> {
     const town = await this.prismaService.town.findFirst({
       where: { OR: [{ uuid: uuidOrName }, { name: uuidOrName }] },
     });
 
-    return new JsonApiResponse<TownDto>(
+    return new JsonApiResponse<TownEntity>(
       HttpStatus.OK,
       'Town retrieved successfully',
       town,
@@ -83,7 +99,7 @@ export class TownService {
   async update(
     uuid: string,
     townDto: TownDto,
-  ): Promise<JsonApiResponse<TownDto>> {
+  ): Promise<JsonApiResponse<TownEntity>> {
     const {
       name,
       area,
@@ -112,14 +128,14 @@ export class TownService {
       },
     });
 
-    return new JsonApiResponse<TownDto>(
+    return new JsonApiResponse<TownEntity>(
       HttpStatus.OK,
       'Town updated successfully',
       updatedTown,
     );
   }
 
-  async delete(uuid: string): Promise<JsonApiResponse<TownDto>> {
+  async delete(uuid: string): Promise<JsonApiResponse<TownEntity>> {
     const town = await this.prismaService.town.findUnique({ where: { uuid } });
 
     if (!town)
@@ -129,10 +145,22 @@ export class TownService {
       where: { uuid },
     });
 
-    return new JsonApiResponse<TownDto>(
+    return new JsonApiResponse<TownEntity>(
       HttpStatus.OK,
       'Town deleted successfully',
       deletedTown,
     );
+  }
+
+  async deleteMany(townEntity: TownEntity[]) {
+    try {
+      await this.prismaService.$transaction(async (prisma) => {
+        for (const { uuid } of townEntity) {
+          await this.delete(uuid);
+        }
+      });
+    } catch (error) {
+      throw new Error(`error`);
+    }
   }
 }

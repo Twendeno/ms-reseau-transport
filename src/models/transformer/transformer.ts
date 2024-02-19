@@ -82,7 +82,7 @@ export class Transformer<T = any> {
     return response;
   }
 
-  transform(isFeature: string ) {
+  transform(isFeature: string) {
     if (isFeature.trim().toLowerCase().toString() === 'feature') {
       return new Feature(GeojsonType.Feature, this.filterData(), {
         name: this.data[0].coordinate.name,
