@@ -3,15 +3,21 @@ import { CoordinateController } from './coordinate.controller';
 import { CoordinateServiceMock } from './mocks/coordinate.service.mock';
 import { CoordinateService } from './coordinate.service';
 import { coordinateModelMock } from './mocks/coordinate.model.mock';
+import { Request } from 'express';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 describe('CoordinateController', () => {
   let controller: CoordinateController;
+  const page = 1;
+  const perPage = 10;
+  const req: Request = { query: {} } as Request;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CoordinateController],
       providers: [
         { provide: CoordinateService, useClass: CoordinateServiceMock },
+        { provide: CACHE_MANAGER, useValue: {} },
       ],
     }).compile();
 
@@ -23,8 +29,16 @@ describe('CoordinateController', () => {
   });
 
   describe('findAll', () => {
-    it('should return an array of coordinates', () => {
-      expect(controller.findAll()).resolves.toEqual(coordinateModelMock);
+    it('should return an array of coordinates with paginate', () => {
+      expect(controller.findAll(page, perPage, req)).resolves.toEqual(
+        coordinateModelMock,
+      );
+    });
+
+    it('should return an array of coordinates without paginate', () => {
+      expect(controller.findAll(undefined, undefined, req)).resolves.toEqual(
+        coordinateModelMock,
+      );
     });
   });
 

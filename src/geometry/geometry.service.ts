@@ -9,6 +9,8 @@ import { GeometryDto } from './dto/geometryDto';
 import { JsonApiResponse } from '../models/json-api-response/json-api-response';
 import { RandomValueGenerator } from '../models/random-value-generator/random-value-generator';
 import { Util } from '../utils/util';
+import { DistrictEntity } from '../district/models/district.entity';
+import { GeometryEntity } from './models/geometry.entity';
 
 @Injectable()
 export class GeometryService {
@@ -16,12 +18,21 @@ export class GeometryService {
 
   async create(
     geometryDto: GeometryDto,
-  ): Promise<JsonApiResponse<GeometryDto>> {
+  ): Promise<JsonApiResponse<GeometryEntity>> {
     geometryDto.reference = RandomValueGenerator.generateRandomAlphaNumeric(10);
     if (!geometryDto.color) geometryDto.color = Util.generateNewColor();
 
-    let { name, reference,type , color, geodata, town_uuid, department_uuid,assignedBy, lastModifiedBy } =
-      geometryDto;
+    let {
+      name,
+      reference,
+      type,
+      color,
+      geodata,
+      town_uuid,
+      department_uuid,
+      assignedBy,
+      lastModifiedBy,
+    } = geometryDto;
 
     const geometryByRef = await this.prismaService.geometry.findUnique({
       where: { reference },
@@ -46,21 +57,37 @@ export class GeometryService {
         town_uuid,
         department_uuid,
         assignedBy,
-        lastModifiedBy
+        lastModifiedBy,
       },
     });
 
-    return new JsonApiResponse<GeometryDto>(
+    return new JsonApiResponse<GeometryEntity>(
       HttpStatus.CREATED,
       'Geometry successfully created',
       newGeometry,
     );
   }
 
-  async findAll(
+  async findAll(): Promise<JsonApiResponse<GeometryEntity[]>> {
+    const geometries = await this.prismaService.geometry.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        coordinates: { select: { coordinate_uuid: true } },
+        _count: true,
+      },
+    });
+
+    return new JsonApiResponse<GeometryEntity[]>(
+      HttpStatus.OK,
+      'All geometry founded',
+      geometries,
+    );
+  }
+
+  async findAllPaginate(
     page: number,
     perPage: number,
-  ): Promise<JsonApiResponse<GeometryDto[]>> {
+  ): Promise<JsonApiResponse<GeometryEntity[]>> {
     const skip = Number((page - 1) * perPage);
     const take = Number(perPage);
     const total = await this.prismaService.geometry.count();
@@ -76,7 +103,7 @@ export class GeometryService {
       },
     });
 
-    return new JsonApiResponse<GeometryDto[]>(
+    return new JsonApiResponse<GeometryEntity[]>(
       HttpStatus.OK,
       'All geometry founded',
       geometries,
@@ -84,14 +111,14 @@ export class GeometryService {
     );
   }
 
-  async findOne(uuid: string): Promise<JsonApiResponse<GeometryDto>> {
+  async findOne(uuid: string): Promise<JsonApiResponse<GeometryEntity>> {
     const geometry = await this.prismaService.geometry.findUnique({
       where: { uuid },
     });
 
     if (!geometry) throw new NotFoundException('Geometry not found');
 
-    return new JsonApiResponse<GeometryDto>(
+    return new JsonApiResponse<GeometryEntity>(
       HttpStatus.OK,
       'Geometry founded',
       geometry,
@@ -101,8 +128,15 @@ export class GeometryService {
   async update(
     uuid: string,
     geometryDto: GeometryDto,
-  ): Promise<JsonApiResponse<GeometryDto>> {
-    const { name, geodata, town_uuid, department_uuid,assignedBy, lastModifiedBy } = geometryDto;
+  ): Promise<JsonApiResponse<GeometryEntity>> {
+    const {
+      name,
+      geodata,
+      town_uuid,
+      department_uuid,
+      assignedBy,
+      lastModifiedBy,
+    } = geometryDto;
     // Check if the geometry exists
     const geometry = await this.prismaService.geometry.findUnique({
       where: { uuid },
@@ -120,18 +154,18 @@ export class GeometryService {
         town_uuid,
         department_uuid,
         assignedBy,
-        lastModifiedBy
+        lastModifiedBy,
       },
     });
 
-    return new JsonApiResponse<GeometryDto>(
+    return new JsonApiResponse<GeometryEntity>(
       HttpStatus.OK,
       'Geometry successfully updated',
       updatedGeometry,
     );
   }
 
-  async delete(uuid: string): Promise<JsonApiResponse<GeometryDto>> {
+  async delete(uuid: string): Promise<JsonApiResponse<GeometryEntity>> {
     const geometry = await this.prismaService.geometry.findUnique({
       where: { uuid },
     });
@@ -142,23 +176,35 @@ export class GeometryService {
       where: { uuid },
     });
 
-    return new JsonApiResponse<GeometryDto>(
+    return new JsonApiResponse<GeometryEntity>(
       HttpStatus.OK,
       'Geometry successfully deleted',
       geometry,
     );
   }
 
+  async deleteMany(geometryEntity: GeometryEntity[]) {
+    try {
+      await this.prismaService.$transaction(async (prisma) => {
+        for (const { uuid } of geometryEntity) {
+          await this.delete(uuid);
+        }
+      });
+    } catch (error) {
+      throw new Error(`error`);
+    }
+  }
+
   async findGeometryByReference(
     reference: string,
-  ): Promise<JsonApiResponse<GeometryDto>> {
+  ): Promise<JsonApiResponse<GeometryEntity>> {
     const geometry = await this.prismaService.geometry.findUnique({
       where: { reference },
     });
 
     if (!geometry) throw new NotFoundException('Geometry not found');
 
-    return new JsonApiResponse<GeometryDto>(
+    return new JsonApiResponse<GeometryEntity>(
       HttpStatus.OK,
       'Geometry founded',
       geometry,

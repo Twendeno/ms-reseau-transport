@@ -62,7 +62,7 @@ export class Feature {
   ) {}
 }
 
-export class FeatureCollection <T = any>{
+export class FeatureCollection<T = any> {
   constructor(
     public readonly type: string,
     public readonly features: any[],

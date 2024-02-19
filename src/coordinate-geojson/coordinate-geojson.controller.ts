@@ -25,4 +25,13 @@ export class CoordinateGeojsonController {
       isFeature,
     );
   }
+
+  @Get()
+  geojsonCollection() {
+    return this.coordinateGeojsonService.geojsonCollection();
+  }
+  @Get('cluster-station')
+  geojsonClusterStation() {
+    return this.coordinateGeojsonService.geojsonClusterStation();
+  }
 }

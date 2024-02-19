@@ -8,15 +8,25 @@ import { PrismaService } from '../prisma/prisma.service';
 import { JsonApiResponse } from '../models/json-api-response/json-api-response';
 import { DistrictDto } from './dto/district.dto';
 import { Util } from '../utils/util';
+import { DistrictEntity } from './models/district.entity';
 
 @Injectable()
 export class DistrictService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findAll(
+  async findAll(): Promise<JsonApiResponse<DistrictEntity[]>> {
+    const districts = await this.prismaService.district.findMany();
+    return new JsonApiResponse<DistrictEntity[]>(
+      HttpStatus.OK,
+      'Success',
+      districts,
+    );
+  }
+
+  async findAllPaginate(
     page: number,
     perPage: number,
-  ): Promise<JsonApiResponse<DistrictDto[]>> {
+  ): Promise<JsonApiResponse<DistrictEntity[]>> {
     const skip = Number((page - 1) * perPage);
     const take = Number(perPage);
     const total = await this.prismaService.district.count();
@@ -26,7 +36,7 @@ export class DistrictService {
       skip,
       take,
     });
-    return new JsonApiResponse<DistrictDto[]>(
+    return new JsonApiResponse<DistrictEntity[]>(
       HttpStatus.OK,
       'Success',
       districts,
@@ -34,7 +44,7 @@ export class DistrictService {
     );
   }
 
-  async findOne(uuidOrName: string): Promise<JsonApiResponse<DistrictDto>> {
+  async findOne(uuidOrName: string): Promise<JsonApiResponse<DistrictEntity>> {
     const district = await this.prismaService.district.findFirst({
       where: {
         OR: [{ uuid: uuidOrName }, { name: uuidOrName }],
@@ -46,7 +56,7 @@ export class DistrictService {
         `District with id or name ${uuidOrName} not found`,
       );
 
-    return new JsonApiResponse<DistrictDto>(
+    return new JsonApiResponse<DistrictEntity>(
       HttpStatus.OK,
       'District found',
       district,
@@ -55,7 +65,7 @@ export class DistrictService {
 
   async create(
     districtDto: DistrictDto,
-  ): Promise<JsonApiResponse<DistrictDto>> {
+  ): Promise<JsonApiResponse<DistrictEntity>> {
     const { name } = districtDto;
     const checkDistrictName = await this.prismaService.district.findUnique({
       where: {
@@ -70,7 +80,7 @@ export class DistrictService {
       data: districtDto,
     });
 
-    return new JsonApiResponse<DistrictDto>(
+    return new JsonApiResponse<DistrictEntity>(
       HttpStatus.CREATED,
       'District created',
       district,
@@ -80,7 +90,7 @@ export class DistrictService {
   async update(
     uuid: string,
     districtDto: DistrictDto,
-  ): Promise<JsonApiResponse<DistrictDto>> {
+  ): Promise<JsonApiResponse<DistrictEntity>> {
     const { name } = districtDto;
     const checkDistrictUUid = await this.prismaService.district.findUnique({
       where: { uuid },
@@ -96,14 +106,14 @@ export class DistrictService {
       data: districtDto,
     });
 
-    return new JsonApiResponse<DistrictDto>(
+    return new JsonApiResponse<DistrictEntity>(
       HttpStatus.OK,
       'District updated',
       district,
     );
   }
 
-  async delete(uuid: string): Promise<JsonApiResponse<DistrictDto>> {
+  async delete(uuid: string): Promise<JsonApiResponse<DistrictEntity>> {
     const district = await this.prismaService.district.findUnique({
       where: { uuid },
     });
@@ -113,10 +123,22 @@ export class DistrictService {
 
     await this.prismaService.district.delete({ where: { uuid } });
 
-    return new JsonApiResponse<DistrictDto>(
+    return new JsonApiResponse<DistrictEntity>(
       HttpStatus.OK,
       'District deleted',
       district,
     );
+  }
+
+  async deleteMany(districtEntity: DistrictEntity[]) {
+    try {
+      await this.prismaService.$transaction(async (prisma) => {
+        for (const { uuid } of districtEntity) {
+          await this.delete(uuid);
+        }
+      });
+    } catch (error) {
+      throw new Error(`error`);
+    }
   }
 }

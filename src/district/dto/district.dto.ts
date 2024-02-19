@@ -14,6 +14,8 @@ export class DistrictDto {
     type: String,
     description: 'Name of district',
     required: true,
+    example: 'Mahinga',
+    default: 'Mahinga',
   })
   name: string;
 
@@ -24,6 +26,8 @@ export class DistrictDto {
     type: Number,
     description: 'Area of district',
     required: false,
+    example: 100,
+    default: 100,
   })
   area: number;
 
@@ -33,12 +37,20 @@ export class DistrictDto {
     type: String,
     description: 'uuid of department',
     required: true,
+    example: 'uuid',
+    default: 'uuid',
   })
   town_uuid: string;
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ type: String, description: 'uuid of user', required: true })
+  @ApiProperty({
+    type: String,
+    description: 'uuid of user',
+    required: true,
+    example: 'admin',
+    default: 'admin',
+  })
   assignedBy: string;
 
   @IsString()
@@ -47,6 +59,8 @@ export class DistrictDto {
     type: String,
     description: 'uuid of last user',
     required: true,
+    example: 'admin',
+    default: 'admin',
   })
   lastModifiedBy: string;
 
@@ -58,6 +72,7 @@ export class DistrictDto {
     description: 'Geojson of department',
     required: true,
     example: '{"type":"LineString","coordinates":[[0,0],[1,1]]}',
+    default: '{"type":"LineString","coordinates":[[0,0],[1,1]]}',
   })
   geodata: any;
 }
