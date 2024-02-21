@@ -6,4 +6,6 @@ export class CoordinateEntity {
   latLng: string;
   name: string;
   address: string;
+  isDeparture: boolean = false;
+  isArrival: boolean = false;
 }

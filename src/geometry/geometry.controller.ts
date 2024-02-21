@@ -44,7 +44,7 @@ export class GeometryController {
   }
 
   @Get(':uuid')
-  findOne(uuid: string): Promise<JsonApiResponse<GeometryEntity>> {
+  findOne(@Param('uuid') uuid: string): Promise<JsonApiResponse<GeometryEntity>> {
     return this.geometryService.findOne(uuid);
   }
 

@@ -82,4 +82,27 @@ export class CoordinateDto {
     required: false,
   })
   readonly address: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    type: Boolean,
+    description: 'Is arrival',
+    example: false,
+    required: false,
+    default: false,
+  })
+  readonly isArrival: boolean = false;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    type: Boolean,
+    description: 'Is departure',
+    example: false,
+    required: false,
+    default: false,
+  })
+  readonly isDeparture: boolean = false;
+
 }

@@ -63,6 +63,7 @@ export class CoordinatePolygonService {
   async findAll(): Promise<JsonApiResponse<CoordinatePolygonEntity[]>> {
     const coordinatePolygons =
       await this.prismaService.coordinatePolygon.findMany({
+        distinct: ['geometry_uuid'],
         include: {
           geometry: {
             select: {
@@ -100,6 +101,7 @@ export class CoordinatePolygonService {
       await this.prismaService.coordinatePolygon.findMany({
         skip,
         take,
+        distinct: ['geometry_uuid'],
         include: {
           geometry: {
             select: {
@@ -131,6 +133,21 @@ export class CoordinatePolygonService {
     const coordinatePolygon =
       await this.prismaService.coordinatePolygon.findUnique({
         where: { uuid },
+        include: {
+          geometry: {
+            select: {
+              uuid: true,
+              name: true,
+              type: true,
+              reference: true,
+              coordinates: {
+                select: {
+                  coordinate_uuid: true,
+                },
+              },
+            },
+          },
+        },
       });
     return new JsonApiResponse<CoordinatePolygonEntity>(
       HttpStatus.OK,

@@ -11,6 +11,8 @@ export const coordinateModelMock: CoordinateEntity[] = [
     name: '1',
     latLng: '1,1',
     address: 'address1',
+    isDeparture: false,
+    isArrival: false,
   },
 ];
 export const coordinateModelObjectMock: JsonApiResponse = {
@@ -48,6 +50,8 @@ export const newCoordinateModelMock: CoordinateDto = {
   isStop: false,
   name: 'TestCoordinate',
   address: 'TestAddress',
+  isDeparture: false,
+  isArrival: false,
 };
 
 export const coordinateModelMockCreate: JsonApiResponse<CoordinateDto> = {

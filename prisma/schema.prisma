@@ -11,17 +11,19 @@ datasource db {
 }
 
 model Coordinate {
-  uuid      String              @id @default(uuid())
-  longitude Float
-  latitude  Float
-  address   String?             @db.VarChar(255)
-  name      String?             @db.VarChar(50)
-  latLng    String              @unique
-  isStop    Boolean             @default(false)
-  towns     Town[]
-  createdAt DateTime            @default(now())
-  updatedAt DateTime            @updatedAt
-  geometry  CoordinatePolygon[]
+  uuid        String              @id @default(uuid())
+  longitude   Float
+  latitude    Float
+  address     String?             @db.VarChar(255)
+  name        String?             @db.VarChar(50)
+  latLng      String              @unique
+  isStop      Boolean             @default(false)
+  isDeparture Boolean             @default(false)
+  isArrival   Boolean             @default(false)
+  towns       Town[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  geometry    CoordinatePolygon[]
 
   @@index([latLng, name, address])
 }
@@ -47,12 +49,14 @@ model Geometry {
 }
 
 model CoordinatePolygon {
-  uuid      String  @id @default(uuid())
-  name      String  @db.VarChar(50)
-  departure String  @db.VarChar(50)
-  arrival   String  @db.VarChar(50)
-  reference String  @unique @db.VarChar(50)
-  isOnline  Boolean @default(false)
+  uuid                      String  @id @default(uuid())
+  name                      String  @db.VarChar(50)
+  departure                 String  @db.VarChar(50)
+  arrival                   String  @db.VarChar(50)
+  reference                 String  @unique @db.VarChar(50)
+  isOnline                  Boolean @default(false)
+  departure_coordinate_uuid String? @default("NULL")
+  arrival_coordinate_uuid   String? @default("NULL")
 
   geometry_uuid String
   geometry      Geometry @relation(fields: [geometry_uuid], references: [uuid], onDelete: Cascade, onUpdate: Cascade)
