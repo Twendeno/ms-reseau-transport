@@ -7,5 +7,7 @@ export class CoordinatePolygonEntity {
   reference: string;
   geometry_uuid: string;
   coordinate_uuid: string;
+  departure_coordinate_uuid: string;
+  arrival_coordinate_uuid: string;
   assignedBy: string;
 }

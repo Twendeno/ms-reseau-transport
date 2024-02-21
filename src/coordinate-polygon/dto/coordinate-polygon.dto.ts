@@ -88,4 +88,30 @@ export class CoordinatePolygonDto {
     default: 'uuid',
   })
   assignedBy: string;
+
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    type: String,
+    description: 'uuid of departure coordinate',
+    required: true,
+    example: 'uuid',
+    default: 'NULL',
+  })
+  departure_coordinate_uuid: string;
+
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    type: String,
+    description: 'uuid of arrival coordinate',
+    required: true,
+    example: 'uuid',
+    default: 'NULL',
+  })
+  arrival_coordinate_uuid: string;
 }
