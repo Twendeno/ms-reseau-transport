@@ -89,7 +89,6 @@ export class CoordinatePolygonDto {
   })
   assignedBy: string;
 
-
   @IsOptional()
   @IsNotEmpty()
   @IsString()
@@ -101,7 +100,6 @@ export class CoordinatePolygonDto {
     default: 'NULL',
   })
   departure_coordinate_uuid: string;
-
 
   @IsOptional()
   @IsNotEmpty()

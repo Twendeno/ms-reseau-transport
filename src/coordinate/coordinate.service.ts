@@ -10,6 +10,7 @@ import { JsonApiResponse } from '../models/json-api-response/json-api-response';
 import { Util } from '../utils/util';
 import { RandomValueGenerator } from '../models/random-value-generator/random-value-generator';
 import { CoordinateEntity } from './models/coordinate.entity';
+import { CreateManyCoordinateDto } from './dto/create-many-coordinate.dto';
 
 @Injectable()
 export class CoordinateService {
@@ -18,7 +19,15 @@ export class CoordinateService {
   async create(
     coordinateDto: CoordinateDto,
   ): Promise<JsonApiResponse<CoordinateEntity>> {
-    const { latitude, longitude, isStop, name, address } = coordinateDto;
+    const {
+      latitude,
+      longitude,
+      isStop,
+      name,
+      address,
+      isArrival,
+      isDeparture,
+    } = coordinateDto;
     const latLng = [latitude, longitude].toString();
 
     const coordinate = await this.prismaService.coordinate.findUnique({
@@ -28,7 +37,16 @@ export class CoordinateService {
     if (coordinate) throw new ConflictException('Coordinate already exists');
 
     const newCoordinate = await this.prismaService.coordinate.create({
-      data: { latitude, longitude, latLng, name, address, isStop },
+      data: {
+        latitude,
+        longitude,
+        latLng,
+        name,
+        address,
+        isStop,
+        isArrival,
+        isDeparture,
+      },
     });
 
     return new JsonApiResponse<CoordinateEntity>(
@@ -96,7 +114,15 @@ export class CoordinateService {
     uuid: string,
     coordinateDto: CoordinateDto,
   ): Promise<JsonApiResponse<CoordinateEntity>> {
-    const { latitude, longitude, name, address, isStop } = coordinateDto;
+    const {
+      latitude,
+      longitude,
+      name,
+      address,
+      isStop,
+      isDeparture,
+      isArrival,
+    } = coordinateDto;
     const latLng = [latitude, longitude].toString();
 
     // Check if the coordinate exists
@@ -109,7 +135,16 @@ export class CoordinateService {
     // Update the coordinate
     const updatedCoordinate = await this.prismaService.coordinate.update({
       where: { uuid },
-      data: { latitude, longitude, latLng, name, address, isStop },
+      data: {
+        latitude,
+        longitude,
+        latLng,
+        name,
+        address,
+        isStop,
+        isDeparture,
+        isArrival,
+      },
     });
 
     return new JsonApiResponse<CoordinateEntity>(
@@ -150,7 +185,7 @@ export class CoordinateService {
   }
 
   // create many coordinates at once with array of coordinates
-  async createMany(coordinates: number[][], data: any) {
+  async createMany(coordinates: CreateManyCoordinateDto[], data: any) {
     const name = RandomValueGenerator.generateRandomAlphaNumeric(10);
     data.departure = `${name}-A`;
     data.arrival = `${name}-B`;
@@ -162,14 +197,17 @@ export class CoordinateService {
       await this.prismaService.$transaction(async (prismaClient) => {
         // Enregistrez les coordonnées dans la table coordinate
         const coordinateRecords = await Promise.all(
-          coordinates.map(([latitude, longitude]) => {
+          coordinates.map((value, index, array) => {
+            const [latitude, longitude] = value.coordinate;
+            const nameByStation = value.name;
+
             return prismaClient.coordinate.create({
               data: {
                 latitude,
                 longitude,
                 latLng: `${latitude},${longitude}`,
-                name,
-                address: `address of ${name}`,
+                name: nameByStation,
+                address: `address of ${nameByStation}`,
                 isStop: false,
               },
             });

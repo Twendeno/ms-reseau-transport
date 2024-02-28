@@ -2,7 +2,6 @@ import {
   IsBoolean,
   IsLatitude,
   IsLatLong,
-  IsLocale,
   IsLongitude,
   IsNotEmpty,
   IsNumber,
@@ -104,5 +103,4 @@ export class CoordinateDto {
     default: false,
   })
   readonly isDeparture: boolean = false;
-
 }
