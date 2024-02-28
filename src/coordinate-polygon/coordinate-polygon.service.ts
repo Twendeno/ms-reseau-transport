@@ -168,15 +168,14 @@ export class CoordinatePolygonService {
       arrival,
       isOnline,
       name,
+      departure_coordinate_uuid,
+      arrival_coordinate_uuid,
     } = coordinatePolygonDto;
 
     const coordinateExistOnCoordinatePolygon =
       await this.prismaService.coordinatePolygon.findFirst({
         where: { AND: [{ coordinate_uuid }, { geometry_uuid }] },
       });
-
-    if (coordinateExistOnCoordinatePolygon)
-      throw new ConflictException(`coordinate already exist on geometry`);
 
     const coordinatePolygon = await this.prismaService.coordinatePolygon.update(
       {

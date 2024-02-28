@@ -1,0 +1,90 @@
+version: '3.9'
+services:
+
+  tw-rx-trans:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tw-rx-trans
+    ports:
+      - ${PORT}:${PORT}
+
+  meilisearch:
+    image: getmeili/meilisearch
+    container_name: meilisearch
+    ports:
+      - ${MEILI_PORT}:${MEILI_PORT}
+    environment:
+      - MEILI_MASTER_KEY=$MASTER_KEY
+      - MEILI_POSTGRES_HOST=$POSTGRES_HOST
+      - MEILI_POSTGRES_USER=$POSTGRES_USER
+      - MEILI_POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - MEILI_POSTGRES_DB=$POSTGRES_DB
+      - MEILI_POSTGRES_PORT=$POSTGRES_PORT
+    volumes:
+      - meilisearch:/data.ms
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:${MEILI_PORT}" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  cg-osrm-server:
+    image: alpine
+    container_name: cg-osrm-server
+    command: sh -c "cd /home &&
+      rm -rf *.osm.pbf &&
+      wget https://download.geofabrik.de/africa/congo-brazzaville-latest.osm.pbf"
+    volumes:
+      - osrm:/data
+
+  osrm-extract:
+    image: osrm/osrm-backend
+    container_name: osrm-extract
+    command: osrm-extract -p /opt/car.lua /data/congo-brazzaville-latest.osm.pbf
+    volumes:
+      - osrm:/data
+    depends_on:
+      cg-osrm-server:
+        condition: service_completed_successfully
+
+  osrm-partition:
+    image: osrm/osrm-backend
+    container_name: osrm-partition
+    command: osrm-partition /data/congo-brazzaville-latest.osm
+    volumes:
+      - osrm:/data
+    depends_on:
+      osrm-extract:
+        condition: service_completed_successfully
+
+  osrm-customize:
+    image: osrm/osrm-backend
+    container_name: osrm-customize
+    command: osrm-customize /data/congo-brazzaville-latest.osm
+    volumes:
+      - osrm:/data
+    depends_on:
+      osrm-partition:
+        condition: service_completed_successfully
+  osrm:
+    image: osrm/osrm-backend
+    container_name: osrm
+    command: "osrm-routed --algorithm mld /data/congo-brazzaville-latest.osrm"
+    ports:
+      - ${OSRM_PORT}:${OSRM_PORT}
+    volumes:
+      - osrm:/data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:${OSRM_PORT}" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    depends_on:
+      osrm-customize:
+        condition: service_completed_successfully
+
+volumes:
+  osrm:
+  meilisearch:
+

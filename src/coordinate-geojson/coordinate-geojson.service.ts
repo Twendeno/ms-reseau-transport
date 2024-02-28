@@ -88,14 +88,31 @@ export class CoordinateGeojsonService {
     return dataCollection;
   }
 
-  async geojsonClusterStation() {
+  async geojsonClusterStation(kindOfStation: string = 'stop') {
     const dataCluster = {
       type: 'FeatureCollection',
       features: [],
     };
+
+    let clause = {};
+    switch (kindOfStation.toLowerCase().trim().toString()) {
+      case 'stop':
+        clause = { isStop: true };
+        break;
+      case 'departure':
+        clause = { isDeparture: true };
+        break;
+      case 'arrival':
+        clause = { isArrival: true };
+        break;
+      default:
+        clause = { isStop: true };
+        break;
+    }
+
     const stations = await this.prismaService.coordinate.findMany({
       select: { latitude: true, longitude: true, name: true },
-      where: { isStop: true },
+      where: clause,
     });
     stations.forEach((station) => {
       dataCluster.features.push({

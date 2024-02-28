@@ -17,6 +17,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 import { Request } from 'express';
 import { CoordinateEntity } from './models/coordinate.entity';
+import { CreateManyCoordinateDto } from './dto/create-many-coordinate.dto';
 
 @Controller('coordinates')
 @ApiTags('coordinates')
@@ -31,7 +32,7 @@ export class CoordinateController {
   }
   @Post('many')
   createManyCoordinate(
-    @Body('coordinates') coordinates: number[][],
+    @Body('coordinates') coordinates: CreateManyCoordinateDto[],
     @Body('geometry_uuid') geometry_uuid: string,
     @Body('assignedBy') assignedBy: string,
   ) {

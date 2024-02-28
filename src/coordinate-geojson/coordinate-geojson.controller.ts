@@ -31,7 +31,9 @@ export class CoordinateGeojsonController {
     return this.coordinateGeojsonService.geojsonCollection();
   }
   @Get('cluster-station')
-  geojsonClusterStation() {
-    return this.coordinateGeojsonService.geojsonClusterStation();
+  geojsonClusterStation(
+    @Query('kindOfStation') kindOfStation: string = 'stop',
+  ) {
+    return this.coordinateGeojsonService.geojsonClusterStation(kindOfStation);
   }
 }

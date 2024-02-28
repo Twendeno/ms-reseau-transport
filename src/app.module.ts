@@ -9,6 +9,7 @@ import { CoordinatePolygonModule } from './coordinate-polygon/coordinate-polygon
 import { DepartmentModule } from './department/department.module';
 import { TownModule } from './town/town.module';
 import { DistrictModule } from './district/district.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { DistrictModule } from './district/district.module';
     DepartmentModule,
     TownModule,
     DistrictModule,
+    SearchModule,
   ],
   controllers: [],
   providers: [],
