@@ -1,23 +1,20 @@
-import {
-  ConflictException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { CoordinateDto } from './dto/coordinate.dto';
-import { PrismaService } from '../prisma/prisma.service';
-import { JsonApiResponse } from '../models/json-api-response/json-api-response';
-import { Util } from '../utils/util';
-import { RandomValueGenerator } from '../models/random-value-generator/random-value-generator';
-import { CoordinateEntity } from './models/coordinate.entity';
-import { CreateManyCoordinateDto } from './dto/create-many-coordinate.dto';
+import { ConflictException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
+import { CoordinateDto } from "./dto/coordinate.dto";
+import { PrismaService } from "../prisma/prisma.service";
+import { JsonApiResponse } from "../models/json-api-response/json-api-response";
+import { Util } from "../utils/util";
+import { RandomValueGenerator } from "../models/random-value-generator/random-value-generator";
+import { CoordinateEntity } from "./models/coordinate.entity";
+import { CreateManyCoordinateDto } from "./dto/create-many-coordinate.dto";
+import { UpdateCoordinateDto } from "./dto/update-coordinate.dto";
 
 @Injectable()
 export class CoordinateService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {
+  }
 
   async create(
-    coordinateDto: CoordinateDto,
+    coordinateDto: CoordinateDto
   ): Promise<JsonApiResponse<CoordinateEntity>> {
     const {
       latitude,
@@ -26,15 +23,15 @@ export class CoordinateService {
       name,
       address,
       isArrival,
-      isDeparture,
+      isDeparture
     } = coordinateDto;
     const latLng = [latitude, longitude].toString();
 
     const coordinate = await this.prismaService.coordinate.findUnique({
-      where: { latLng },
+      where: { latLng }
     });
 
-    if (coordinate) throw new ConflictException('Coordinate already exists');
+    if (coordinate) throw new ConflictException("Coordinate already exists");
 
     const newCoordinate = await this.prismaService.coordinate.create({
       data: {
@@ -45,34 +42,34 @@ export class CoordinateService {
         address,
         isStop,
         isArrival,
-        isDeparture,
-      },
+        isDeparture
+      }
     });
 
     return new JsonApiResponse<CoordinateEntity>(
       HttpStatus.CREATED,
-      'Coordinate successfully created',
-      newCoordinate,
+      "Coordinate successfully created",
+      newCoordinate
     );
   }
 
   async findAll(): Promise<JsonApiResponse<CoordinateEntity[]>> {
     let args: any = {
-      include: { geometry: { select: { geometry_uuid: true } }, _count: true },
+      include: { geometry: { select: { geometry_uuid: true } }, _count: true }
     };
 
     const coordinates = await this.prismaService.coordinate.findMany(args);
 
     return new JsonApiResponse<CoordinateEntity[]>(
       HttpStatus.OK,
-      'All coordinate founded',
-      coordinates,
+      "All coordinate founded",
+      coordinates
     );
   }
 
   async findAllPaginate(
     page: number,
-    perPage: number,
+    perPage: number
   ): Promise<JsonApiResponse<CoordinateEntity[]>> {
     const skip = Number((page - 1) * perPage);
     const take = Number(perPage);
@@ -82,93 +79,74 @@ export class CoordinateService {
     let args: any = {
       skip,
       take,
-      include: { geometry: { select: { geometry_uuid: true } }, _count: true },
+      include: { geometry: { select: { geometry_uuid: true } }, _count: true }
     };
 
     const coordinates = await this.prismaService.coordinate.findMany(args);
 
     return new JsonApiResponse<CoordinateEntity[]>(
       HttpStatus.OK,
-      'All coordinate founded',
+      "All coordinate founded",
       coordinates,
-      meta,
+      meta
     );
   }
 
   async findOne(uuid: string): Promise<JsonApiResponse<CoordinateEntity>> {
     const coordinate = await this.prismaService.coordinate.findUnique({
       where: { uuid },
-      include: { geometry: true },
+      include: { geometry: true }
     });
 
-    if (!coordinate) throw new NotFoundException('Coordinate not found');
+    if (!coordinate) throw new NotFoundException("Coordinate not found");
 
     return new JsonApiResponse<CoordinateEntity>(
       HttpStatus.OK,
-      'Coordinate founded',
-      coordinate,
+      "Coordinate founded",
+      coordinate
     );
   }
 
   async update(
     uuid: string,
-    coordinateDto: CoordinateDto,
+    coordinateDto: UpdateCoordinateDto
   ): Promise<JsonApiResponse<CoordinateEntity>> {
-    const {
-      latitude,
-      longitude,
-      name,
-      address,
-      isStop,
-      isDeparture,
-      isArrival,
-    } = coordinateDto;
-    const latLng = [latitude, longitude].toString();
 
     // Check if the coordinate exists
     const coordinate = await this.prismaService.coordinate.findUnique({
-      where: { uuid },
+      where: { uuid }
     });
 
-    if (!coordinate) throw new NotFoundException('Coordinate not found');
+    if (!coordinate) throw new NotFoundException("Coordinate not found");
 
     // Update the coordinate
     const updatedCoordinate = await this.prismaService.coordinate.update({
       where: { uuid },
-      data: {
-        latitude,
-        longitude,
-        latLng,
-        name,
-        address,
-        isStop,
-        isDeparture,
-        isArrival,
-      },
+      data: { ...coordinate,...coordinateDto }
     });
 
     return new JsonApiResponse<CoordinateEntity>(
       HttpStatus.OK,
-      'Coordinate successfully updated',
-      updatedCoordinate,
+      "Coordinate successfully updated",
+      updatedCoordinate
     );
   }
 
   async delete(uuid: string): Promise<JsonApiResponse<CoordinateEntity>> {
     const coordinate = await this.prismaService.coordinate.findUnique({
-      where: { uuid },
+      where: { uuid }
     });
 
-    if (!coordinate) throw new NotFoundException('Coordinate not found');
+    if (!coordinate) throw new NotFoundException("Coordinate not found");
 
     await this.prismaService.coordinate.delete({
-      where: { uuid },
+      where: { uuid }
     });
 
     return new JsonApiResponse<CoordinateEntity>(
       HttpStatus.OK,
-      'Coordinate successfully deleted',
-      coordinate,
+      "Coordinate successfully deleted",
+      coordinate
     );
   }
 
@@ -208,10 +186,10 @@ export class CoordinateService {
                 latLng: `${latitude},${longitude}`,
                 name: nameByStation,
                 address: `address of ${nameByStation}`,
-                isStop: false,
-              },
+                isStop: false
+              }
             });
-          }),
+          })
         );
 
         // Récupérez les UUID des coordonnées enregistrées
@@ -232,10 +210,10 @@ export class CoordinateService {
                 arrival,
                 isOnline,
                 name: `${data.departure} - ${data.arrival}`,
-                reference,
-              },
+                reference
+              }
             });
-          }),
+          })
         );
       });
     } catch (error) {
@@ -245,18 +223,18 @@ export class CoordinateService {
   }
 
   async findOneByLatLng(
-    latLng: string,
+    latLng: string
   ): Promise<JsonApiResponse<CoordinateEntity>> {
     const coordinate = await this.prismaService.coordinate.findUnique({
-      where: { latLng },
+      where: { latLng }
     });
 
-    if (!coordinate) throw new NotFoundException('Coordinate not found');
+    if (!coordinate) throw new NotFoundException("Coordinate not found");
 
     return new JsonApiResponse<CoordinateEntity>(
       HttpStatus.OK,
-      'Coordinate founded',
-      coordinate,
+      "Coordinate founded",
+      coordinate
     );
   }
 }

@@ -1,14 +1,5 @@
 version: '3.9'
 services:
-
-  tw-rx-trans:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: tw-rx-trans
-    ports:
-      - ${PORT}:${PORT}
-
   meilisearch:
     image: getmeili/meilisearch
     container_name: meilisearch
@@ -29,19 +20,30 @@ services:
       timeout: 10s
       retries: 5
 
+#  tw-rx-trans:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: tw-rx-trans
+#    ports:
+#      - ${PORT}:${PORT}
+#    depends_on:
+#      meilisearch:
+#        condition: service_healthy
+
   cg-osrm-server:
     image: alpine
     container_name: cg-osrm-server
-    command: sh -c "cd /home &&
+    command: sh -c "cd /data &&
       rm -rf *.osm.pbf &&
-      wget https://download.geofabrik.de/africa/congo-brazzaville-latest.osm.pbf"
+      wget https://download.geofabrik.de/africa/congo-brazzaville-latest.osm.pbf -O cg.osm.pbf"
     volumes:
       - osrm:/data
 
   osrm-extract:
     image: osrm/osrm-backend
     container_name: osrm-extract
-    command: osrm-extract -p /opt/car.lua /data/congo-brazzaville-latest.osm.pbf
+    command: osrm-extract -p /opt/car.lua /data/cg.osm.pbf
     volumes:
       - osrm:/data
     depends_on:
@@ -51,7 +53,7 @@ services:
   osrm-partition:
     image: osrm/osrm-backend
     container_name: osrm-partition
-    command: osrm-partition /data/congo-brazzaville-latest.osm
+    command: osrm-partition /data/cg.osm
     volumes:
       - osrm:/data
     depends_on:
@@ -61,7 +63,7 @@ services:
   osrm-customize:
     image: osrm/osrm-backend
     container_name: osrm-customize
-    command: osrm-customize /data/congo-brazzaville-latest.osm
+    command: osrm-customize /data/cg.osm
     volumes:
       - osrm:/data
     depends_on:
@@ -70,7 +72,7 @@ services:
   osrm:
     image: osrm/osrm-backend
     container_name: osrm
-    command: "osrm-routed --algorithm mld /data/congo-brazzaville-latest.osrm"
+    command: "osrm-routed --algorithm mld /data/cg.osrm"
     ports:
       - ${OSRM_PORT}:${OSRM_PORT}
     volumes:
@@ -83,6 +85,24 @@ services:
     depends_on:
       osrm-customize:
         condition: service_completed_successfully
+
+  db:
+    image: postgres:alpine3.18
+    container_name: db
+    depends_on:
+      osrm:
+        condition: service_started
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 volumes:
   osrm:

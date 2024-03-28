@@ -18,6 +18,7 @@ import { CacheInterceptor } from '@nestjs/cache-manager';
 import { Request } from 'express';
 import { CoordinateEntity } from './models/coordinate.entity';
 import { CreateManyCoordinateDto } from './dto/create-many-coordinate.dto';
+import { UpdateCoordinateDto } from "./dto/update-coordinate.dto";
 
 @Controller('coordinates')
 @ApiTags('coordinates')
@@ -75,7 +76,7 @@ export class CoordinateController {
   @Put(':uuid')
   update(
     @Param('uuid') uuid: string,
-    @Body() coordinateDto: CoordinateDto,
+    @Body() coordinateDto: UpdateCoordinateDto,
   ): Promise<JsonApiResponse<CoordinateEntity>> {
     return this.coordinateService.update(uuid, coordinateDto);
   }
